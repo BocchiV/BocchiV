@@ -37,7 +37,7 @@ const BocchiV = {
 
 ### `> stack`
 
-<img align="right" src="https://raw.githubusercontent.com/CharlesWiiFlowers/MikuPet/main/public/media/example_0.gif" width="160" />
+<img align="right" src="./miku.gif" width="160" />
 
 <br/>
 
