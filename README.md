@@ -2,7 +2,7 @@
 
 <img src="https://capsule-render.vercel.app/api?type=transparent&height=130&text=V&fontSize=110&fontColor=00d4ff&animation=fadeIn&fontAlignY=55" width="700"/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=13&duration=2800&pause=1000&color=00d4ff&center=true&vCenter=true&repeat=true&width=500&height=30&lines=creation+is+very+close...;building+Projects+Lydia;probably+overthinking+it+%F0%9F%8C%99;just+vibing" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=13&duration=2800&pause=1000&color=00d4ff&center=true&vCenter=true&repeat=true&width=500&height=30&lines=creation+is+very+close...;building+Projects+Lydia;probably+overthinking+it+%F0%9F%8C%99;just+vibing+in+AfterLife" />
 
 <br/>
 
@@ -10,21 +10,25 @@
 ![](https://img.shields.io/badge/AfterLife-0d0221?style=flat-square&labelColor=00d4ff&color=0d0221)
 ![](https://img.shields.io/badge/-%20-%2300d4ff?style=flat-square&labelColor=0d0221&label=◈&color=0d0221)
 
+<br/>
+
+[![GitHub followers](https://img.shields.io/github/followers/BocchiV?style=flat-square&color=0d0221&labelColor=00d4ff&label=followers&logo=github&logoColor=0d0221)](https://github.com/BocchiV?tab=followers)
+&nbsp;
+[![GitHub stars](https://img.shields.io/github/stars/BocchiV?style=flat-square&color=0d0221&labelColor=00d4ff&label=stars&logo=github&logoColor=0d0221)](https://github.com/BocchiV)
+
 </div>
 
 ---
 
-<img align="right" src="https://github-readme-stats.vercel.app/api/top-langs/?username=BocchiV&layout=compact&theme=midnight-purple&bg_color=0d0221&border_color=00d4ff&title_color=00d4ff&text_color=e2e8f0&hide_border=false&langs_count=6" width="36%" />
+<img align="right" src="https://github-readme-stats.vercel.app/api/top-langs/?username=BocchiV&layout=compact&theme=transparent&bg_color=0d0221&border_color=00d4ff&title_color=00d4ff&text_color=e2e8f0&hide_border=false&langs_count=6" width="36%" />
 
 ### `> whoami`
 
 ```ts
-const BocchiV = {
+const V = {
   vibe:      "creating for the love of it",
   stack:     ["TypeScript", "React", "Node.js", "Python",
-              "PostgreSQL", "Docker", "REST APIs", "Git",
-              "Linux", "Tailwind CSS", "Vite", "Express"],
-  interests: ["creation is very close"],
+              "PostgreSQL", "Docker", "REST APIs"],
   currently: "building Projects Lydia",
   irl:       "AfterLife",
   status:    "probably listening to the OST rn",
@@ -32,6 +36,16 @@ const BocchiV = {
 ```
 
 <br clear="right"/>
+
+---
+
+### `> projects`
+
+<div align="center">
+
+[![project-lydia-1](https://github-readme-stats.vercel.app/api/pin/?username=BocchiV&repo=project-lydia-1&theme=transparent&bg_color=0d0221&border_color=00d4ff&title_color=00d4ff&text_color=e2e8f0&icon_color=00d4ff&hide_border=false)](https://github.com/BocchiV/project-lydia-1)
+
+</div>
 
 ---
 
@@ -75,7 +89,7 @@ const BocchiV = {
 <div align="center">
 <br/>
 
-<img src="https://streak-stats.demolab.com?user=BocchiV&theme=transparent&background=0d0221&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=94a3b8&stroke=00d4ff30&hide_total_contributions=false" width="60%" />
+<img src="https://streak-stats.demolab.com?user=BocchiV&theme=transparent&background=0d0221&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=94a3b8&stroke=00d4ff30" width="60%" />
 
 <br/><br/>
 
