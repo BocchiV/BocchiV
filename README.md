@@ -25,13 +25,6 @@
 
 <br/><br/>
 
-[![followers](https://img.shields.io/github/followers/BocchiV?style=flat-square&labelColor=0d1117&color=00d4ff&label=followers&logo=github&logoColor=00d4ff)](https://github.com/BocchiV?tab=followers)
-&nbsp;
-[![stars](https://img.shields.io/github/stars/BocchiV?style=flat-square&labelColor=0d1117&color=00d4ff&label=stars&logo=github&logoColor=00d4ff)](https://github.com/BocchiV)
-&nbsp;
-<img src="https://komarev.com/ghpvc/?username=BocchiV&style=flat-square&color=0d1117&labelColor=00d4ff&label=visitors"/>
-
-<br/>
 
 ---
 
