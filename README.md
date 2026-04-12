@@ -57,9 +57,6 @@
 
 <p align="center"><img src="https://count.getloli.com/get/@BocchiV?theme=moebooru"/></p>
 
-<p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d1117&color=00d4ff&line=00d4ff&point=7c3aed&area=true&area_color=00d4ff&hide_border=true" width="92%"/>
-</p>
 
 <br/>
 
