@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=62&duration=4000&pause=3000&color=FCF000&center=true&vCenter=true&width=700&height=140&lines=V" alt="V" />
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=62&duration=4000&pause=3000&color=00D4FF&center=true&vCenter=true&width=700&height=140&lines=V" alt="V" />
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=13&duration=2800&pause=1000&color=B06AFF&center=true&vCenter=true&repeat=true&width=500&height=30&lines=creation+is+very+close...;building+Projects+Lydia;probably+overthinking+it+%F0%9F%8C%99;just+vibing" />
 
