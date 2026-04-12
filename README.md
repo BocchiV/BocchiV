@@ -51,7 +51,7 @@
 
 ---
 
-## **📡 signal trace**
+## **📡 Signal Trace**
 
 <a href="https://github.com/BocchiV"><img align="right" width="120" src="./img/waguri_pfft.jpg"/></a>
 
@@ -61,7 +61,7 @@
 
 ---
 
-## **🔒 classified**
+## **🔒 Classified**
 
 <a href="https://github.com/BocchiV"><img align="left" width="120" src="./img/waguri_what.jpg"/></a>
 
