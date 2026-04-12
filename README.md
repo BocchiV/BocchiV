@@ -60,7 +60,7 @@
      Üzgün/düşünceli küçük karakter — MiyagawaMizu'nun marin_sad gibi -->
 <a href="https://github.com/BocchiV"><img align="right" width="120" src="./img/waguri_pfft.jpg"/></a>
 
-<p align="center"><img width="55%" src="https://streak-stats.demolab.com?user=BocchiV&theme=dark&background=0d1117&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=8b949e&sideNums=ffffff&currStreakNum=ffffff"/></p>
+<p align="center"><img src="https://count.getloli.com/get/@BocchiV?theme=moebooru"/></p>
 
 <p align="center">
 <picture>
