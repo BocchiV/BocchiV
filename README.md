@@ -4,15 +4,11 @@
 
 <br/>
 
-### `Light of Creation`
-
-```
-  ██╗   ██╗
-  ██║   ██║
-  ╚██╗ ██╔╝
-   ╚████╔╝
-    ╚═══╝   — AfterLife
-```
+<p align="center">
+  <a href="https://discord.com/users/408570036547223554">
+    <img src="https://lanyard.cnrad.dev/api/408570036547223554?theme=dark&bg=0d1117&borderRadius=12px&idleMessage=signal%20lost..." alt="Discord Status"/>
+  </a>
+</p>
 
 - Location: **AfterLife**
 - Occupation: **building Project Lydia**
