@@ -62,7 +62,13 @@
 
 <p align="center"><img width="55%" src="https://streak-stats.demolab.com?user=BocchiV&theme=dark&background=0d1117&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=8b949e&sideNums=ffffff&currStreakNum=ffffff"/></p>
 
-<p align="center"><img width="92%" src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d1117&color=00d4ff&line=00d4ff&point=ffffff&area=true&area_color=00d4ff20&hide_border=false&border_color=00d4ff&title_color=00d4ff&custom_title=signal+trace"/></p>
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake-dark.svg"/>
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake.svg"/>
+  <img alt="snake animation" src="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake-dark.svg" width="92%"/>
+</picture>
+</p>
 
 <br/>
 
