@@ -67,11 +67,7 @@
 <p align="center"><img src="https://count.getloli.com/get/@BocchiV?theme=moebooru"/></p>
 
 <p align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake-dark.svg"/>
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake.svg"/>
-  <img alt="snake animation" src="https://raw.githubusercontent.com/BocchiV/BocchiV/output/github-snake-dark.svg" width="92%"/>
-</picture>
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d1117&color=00d4ff&line=00d4ff&point=7c3aed&area=true&area_color=00d4ff&hide_border=true" width="92%"/>
 </p>
 
 <br/>
