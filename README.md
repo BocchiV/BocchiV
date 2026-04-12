@@ -1,35 +1,62 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,12,19&height=160&section=header&text=V&fontSize=90&fontColor=fff&animation=fadeIn&fontAlignY=38&desc=building%20%E2%80%A2%20creating%20%E2%80%A2%20AfterLife&descAlignY=60&descSize=16&descAlign=50" width="100%"/>
-
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  GÖRSEL A — img/banner.webp                                ║
+     ║  Boyut: 1200×380px minimum                                 ║
+     ║  Stil: Karanlık atmosferik sahne, siber/neon/anime dark    ║
+     ║  Arama: "cyberpunk dark corridor" "anime dark room neon"   ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
 <div align="center">
+<img src="./img/banner.webp" width="100%"/>
+</div>
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=15&duration=3000&pause=1000&color=00d4ff&center=true&vCenter=true&multiline=false&repeat=true&width=500&height=30&lines=creation+is+very+close...;building+Projects+Lydia;probably+overthinking+it;just+vibing+in+AfterLife" />
-
-<br/><br/>
-
-[![followers](https://img.shields.io/github/followers/BocchiV?style=flat-square&labelColor=161b22&color=00d4ff&label=followers&logo=github&logoColor=00d4ff)](https://github.com/BocchiV?tab=followers)
-&nbsp;&nbsp;
-[![stars](https://img.shields.io/github/stars/BocchiV?style=flat-square&labelColor=161b22&color=00d4ff&label=stars&logo=github&logoColor=00d4ff)](https://github.com/BocchiV)
-&nbsp;&nbsp;
-<img src="https://komarev.com/ghpvc/?username=BocchiV&style=flat-square&color=161b22&labelColor=00d4ff&label=views"/>
-
+<div align="center">
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=13&duration=2800&pause=900&color=00d4ff&center=true&vCenter=true&multiline=false&repeat=true&width=520&height=28&lines=signal+detected+%E2%96%91%E2%96%92%E2%96%93%E2%96%93%E2%96%92%E2%96%91;origin%3A+%5BREDACTED%5D+%E2%80%94+location%3A+AfterLife;node+V+is+online...;building+Project+Lydia;probably+overthinking+it" />
 </div>
 
+<br/>
+
 ---
+
+<!-- ╔══════════════════════════════════════════════════════════════╗
+     ║  GÖRSEL B — img/char.webp veya char.gif                   ║
+     ║  Boyut: 300-340px genişlik, şeffaf arka plan tercihli      ║
+     ║  Stil: Gizemli anime karakteri, koyu kıyafet, bakış uzakta ║
+     ║  Arama: "mysterious anime girl dark" "cyberpunk anime      ║
+     ║  character transparent" — waifu.im, zerochan, pixiv       ║
+     ╚══════════════════════════════════════════════════════════════╝ -->
+
+<img src="./img/char.webp" align="right" width="320"/>
 
 ### `> whoami`
 
 ```ts
 const V = {
-  vibe:      "creating for the love of it",
+  id:        "V",
+  origin:    "[REDACTED]",
+  location:  "AfterLife",
+  build:     "Project Lydia",
   stack:     ["TypeScript", "React", "Node.js",
               "Python", "PostgreSQL", "Docker"],
-  currently: "building Projects Lydia",
-  irl:       "AfterLife",
-  status:    "probably listening to the OST rn",
-};
+  projects:  ["Project Lydia", "???", "???"],
+  signal:    "still broadcasting",
+  status:    "probably overthinking it",
+} as const;
 ```
+
+<br/>
+
+<div align="center">
+
+[![followers](https://img.shields.io/github/followers/BocchiV?style=flat-square&labelColor=0d1117&color=00d4ff&label=followers&logo=github&logoColor=00d4ff)](https://github.com/BocchiV?tab=followers)
+&nbsp;&nbsp;
+[![stars](https://img.shields.io/github/stars/BocchiV?style=flat-square&labelColor=0d1117&color=00d4ff&label=stars&logo=github&logoColor=00d4ff)](https://github.com/BocchiV)
+&nbsp;&nbsp;
+<img src="https://komarev.com/ghpvc/?username=BocchiV&style=flat-square&color=0d1117&labelColor=00d4ff&label=visitors"/>
+
+</div>
+
+<br/>
 
 ---
 
@@ -68,7 +95,7 @@ const V = {
 
 ---
 
-### `> stats`
+### `> signal_trace`
 
 <br/>
 
@@ -78,9 +105,34 @@ const V = {
 
 <br/><br/>
 
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d1117&color=00d4ff&line=00d4ff&point=ffffff&area=true&area_color=00d4ff20&hide_border=false&border_color=00d4ff&title_color=00d4ff&custom_title=contribution+activity" width="92%"/>
+<img src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d1117&color=00d4ff&line=00d4ff&point=ffffff&area=true&area_color=00d4ff20&hide_border=false&border_color=00d4ff&title_color=00d4ff&custom_title=signal+trace" width="92%"/>
 
 </div>
+
+<br/>
+
+---
+
+<details>
+<summary><code>> decrypt_logs()</code></summary>
+
+<br/>
+
+```
+i build in a city that forgot the sun.
+
+Project Lydia is not just a project —
+it's a signal sent into the void,
+hoping something on the other side
+is still listening.
+
+AfterLife is not a place.
+it's what remains after the noise stops.
+```
+
+<br/>
+
+</details>
 
 ---
 
@@ -88,7 +140,7 @@ const V = {
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=13&duration=4000&pause=99999&color=00d4ff&center=true&vCenter=true&repeat=false&width=500&lines=%22Don%27t+fight+for+their+future.+Fight+for+yours.%22"/>
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=13&duration=4000&pause=99999&color=00d4ff&center=true&vCenter=true&repeat=false&width=600&lines=%22Don%27t+fight+for+their+future.+Fight+for+yours.%22"/>
 
 <sub>— Raven</sub>
 
@@ -96,4 +148,4 @@ const V = {
 
 </div>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,12,19&height=120&section=footer&reversal=false" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,12,19&height=120&section=footer" width="100%"/>
