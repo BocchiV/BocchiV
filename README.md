@@ -75,8 +75,11 @@ const BocchiV = {
 <div align="center">
 <br/>
 
-<img src="https://github-readme-stats.vercel.app/api?username=BocchiV&show_icons=true&theme=midnight-purple&bg_color=0d0221&border_color=00d4ff&title_color=00d4ff&text_color=e2e8f0&icon_color=00d4ff&hide_border=false&include_all_commits=true&count_private=true" width="49%" />
-<img src="https://streak-stats.demolab.com?user=BocchiV&theme=midnight-purple&background=0d0221&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=94a3b8&dates=475569" width="49%" />
+<img src="https://streak-stats.demolab.com?user=BocchiV&theme=transparent&background=0d0221&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=94a3b8&stroke=00d4ff30&hide_total_contributions=false" width="60%" />
+
+<br/><br/>
+
+<img src="https://github-readme-activity-graph.vercel.app/graph?username=BocchiV&bg_color=0d0221&color=00d4ff&line=00d4ff&point=ffffff&area=true&area_color=00d4ff&hide_border=false&border_color=00d4ff&title_color=00d4ff&custom_title=contribution+activity" width="95%" />
 
 </div>
 
