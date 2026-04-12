@@ -1,8 +1,14 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,50:1a0a4a,100:00aaff&height=220&section=header&text=BocchiV&fontSize=80&fontColor=00d4ff&animation=twinkling&fontAlignY=45&desc=creation%20is%20very%20close&descSize=14&descColor=b06aff&descAlignY=65" width="100%"/>
-
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=14&duration=3000&pause=1000&color=00D4FF&background=00000000&center=true&vCenter=true&repeat=true&width=440&lines=building+Projects+Lydia...;creation+is+very+close;probably+overthinking+it+%F0%9F%8C%99;just+vibing" />
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=62&duration=4000&pause=3000&color=00D4FF&center=true&vCenter=true&width=700&height=140&lines=BocchiV" alt="BocchiV" />
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=13&duration=2800&pause=1000&color=B06AFF&center=true&vCenter=true&repeat=true&width=500&height=30&lines=creation+is+very+close...;building+Projects+Lydia;probably+overthinking+it+%F0%9F%8C%99;just+vibing" />
+
+<br/>
+
+![](https://img.shields.io/badge/-%20-%2300d4ff?style=flat-square&labelColor=0d0221&label=◈&color=0d0221)
+![](https://img.shields.io/badge/AfterLife-0d0221?style=flat-square&labelColor=7c3aed&color=0d0221)
+![](https://img.shields.io/badge/-%20-%2300d4ff?style=flat-square&labelColor=0d0221&label=◈&color=0d0221)
 
 </div>
 
@@ -66,14 +72,12 @@ const BocchiV = {
   ╚══════════════════════════════════════════╝
 ```
 
-</div>
+<br/>
 
----
-
-<div align="center">
 <img src="https://komarev.com/ghpvc/?username=BocchiV&style=flat-square&color=7c3aed&label=profile+views" />
+
 </div>
 
 <br/>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00aaff,50:7c3aed,100:0d0221&height=120&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,50:7c3aed,100:00aaff&height=100&section=footer&reversal=true" width="100%"/>
