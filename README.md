@@ -37,8 +37,6 @@ const BocchiV = {
 
 ### `> stack`
 
-<img align="right" src="./miku.gif" width="160" />
-
 <br/>
 
 <img src="https://skillicons.dev/icons?i=ts,react,nodejs,python,vite,tailwind&theme=dark&perline=6" />
