@@ -1,6 +1,3 @@
-<!-- 🖼️ GÖRSEL 1: img/banner.webp — 1200×400px
-     Karanlık atmosferik sahne — anime bg, cyberpunk, dark corridor
-     MiyagawaMizu'nun bg.webp'si gibi tam genişlik açılış görseli -->
 ![](./img/waguri_domain.jpg)
 
 <a href="https://github.com/BocchiV"><img align="right" width="380" src="./img/waguri_annoying.jpg"/></a>
@@ -25,12 +22,8 @@
 
 <br/><br/>
 
-
 ---
 
-<!-- 🖼️ GÖRSEL 2: img/char_2.webp — ~140px genişlik, align=left
-     Küçük karakter görseli — oturan/yan bakan, gizemli
-     Piksel/chibi ya da atmosferik küçük karakter -->
 ## **⚡ stack**
 
 <a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/waguri_pout.jpg"/></a>
@@ -60,8 +53,6 @@
 
 ## **📡 signal trace**
 
-<!-- 🖼️ GÖRSEL 3: img/char_3.webp — ~120px genişlik, align=right
-     Üzgün/düşünceli küçük karakter — MiyagawaMizu'nun marin_sad gibi -->
 <a href="https://github.com/BocchiV"><img align="right" width="120" src="./img/waguri_pfft.jpg"/></a>
 
 <p align="center"><img src="https://count.getloli.com/get/@BocchiV?theme=moebooru"/></p>
@@ -76,8 +67,6 @@
 
 ## **🔒 classified**
 
-<!-- 🖼️ GÖRSEL 4: img/char_4.webp — ~120px genişlik, align=left
-     Küçük smugface/gizemli bakan karakter — MiyagawaMizu'nun marin_smug gibi -->
 <a href="https://github.com/BocchiV"><img align="left" width="120" src="./img/waguri_what.jpg"/></a>
 
 <br/>
