@@ -42,25 +42,25 @@ const BocchiV = {
 <table>
   <tr>
     <td align="center" valign="top">
-      <img src="https://img.shields.io/badge/languages-0d0221?style=for-the-badge&labelColor=0d0221&color=00d4ff&label=⟨+LANGUAGES+⟩" /><br/><br/>
+      <img src="https://img.shields.io/badge/LANGUAGES-00d4ff?style=flat-square&labelColor=0d0221&color=00d4ff" /><br/><br/>
       <img src="https://skillicons.dev/icons?i=ts,python&theme=dark" />
     </td>
     <td align="center" valign="top">
-      <img src="https://img.shields.io/badge/frontend-0d0221?style=for-the-badge&labelColor=0d0221&color=7c3aed&label=⟨+FRONTEND+⟩" /><br/><br/>
+      <img src="https://img.shields.io/badge/FRONTEND-7c3aed?style=flat-square&labelColor=0d0221&color=7c3aed" /><br/><br/>
       <img src="https://skillicons.dev/icons?i=react,vite,tailwind&theme=dark" />
     </td>
     <td align="center" valign="top">
-      <img src="https://img.shields.io/badge/backend-0d0221?style=for-the-badge&labelColor=0d0221&color=b06aff&label=⟨+BACKEND+⟩" /><br/><br/>
+      <img src="https://img.shields.io/badge/BACKEND-b06aff?style=flat-square&labelColor=0d0221&color=b06aff" /><br/><br/>
       <img src="https://skillicons.dev/icons?i=nodejs,express&theme=dark" />
     </td>
   </tr>
   <tr>
     <td align="center" valign="top">
-      <img src="https://img.shields.io/badge/data-0d0221?style=for-the-badge&labelColor=0d0221&color=00d4ff&label=⟨+DATA+%26+INFRA+⟩" /><br/><br/>
+      <img src="https://img.shields.io/badge/DATA%20%26%20INFRA-00d4ff?style=flat-square&labelColor=0d0221&color=00d4ff" /><br/><br/>
       <img src="https://skillicons.dev/icons?i=postgres,docker&theme=dark" />
     </td>
     <td align="center" valign="top" colspan="2">
-      <img src="https://img.shields.io/badge/tools-0d0221?style=for-the-badge&labelColor=0d0221&color=7c3aed&label=⟨+TOOLS+⟩" /><br/><br/>
+      <img src="https://img.shields.io/badge/TOOLS-7c3aed?style=flat-square&labelColor=0d0221&color=7c3aed" /><br/><br/>
       <img src="https://skillicons.dev/icons?i=git,github,vscode,linux&theme=dark" />
     </td>
   </tr>
