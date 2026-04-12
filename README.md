@@ -37,44 +37,15 @@ const BocchiV = {
 
 ### `> stack`
 
-<div align="center">
-<br/>
-
-![](https://img.shields.io/badge/◈_FRONTEND-0d0221?style=flat-square&labelColor=7c3aed&color=0d0221)
+<img align="right" src="https://raw.githubusercontent.com/CharlesWiiFlowers/MikuPet/main/public/media/example_0.gif" width="160" />
 
 <br/>
 
-![TypeScript](https://img.shields.io/badge/TypeScript-0d0221?style=for-the-badge&logo=typescript&logoColor=00d4ff)
-![React](https://img.shields.io/badge/React-0d0221?style=for-the-badge&logo=react&logoColor=00d4ff)
-![Vite](https://img.shields.io/badge/Vite-0d0221?style=for-the-badge&logo=vite&logoColor=00d4ff)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0d0221?style=for-the-badge&logo=tailwindcss&logoColor=00d4ff)
-
+<img src="https://skillicons.dev/icons?i=ts,react,nodejs,python,vite,tailwind&theme=dark&perline=6" />
 <br/><br/>
+<img src="https://skillicons.dev/icons?i=postgres,docker,git,github,vscode,linux&theme=dark&perline=6" />
 
-![](https://img.shields.io/badge/◈_BACKEND-0d0221?style=flat-square&labelColor=7c3aed&color=0d0221)
-
-<br/>
-
-![Node.js](https://img.shields.io/badge/Node.js-0d0221?style=for-the-badge&logo=nodedotjs&logoColor=00d4ff)
-![Express](https://img.shields.io/badge/Express-0d0221?style=for-the-badge&logo=express&logoColor=00d4ff)
-![Python](https://img.shields.io/badge/Python-0d0221?style=for-the-badge&logo=python&logoColor=00d4ff)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-0d0221?style=for-the-badge&logo=postgresql&logoColor=00d4ff)
-
-<br/><br/>
-
-![](https://img.shields.io/badge/◈_TOOLS-0d0221?style=flat-square&labelColor=7c3aed&color=0d0221)
-
-<br/>
-
-![Docker](https://img.shields.io/badge/Docker-0d0221?style=for-the-badge&logo=docker&logoColor=b06aff)
-![Git](https://img.shields.io/badge/Git-0d0221?style=for-the-badge&logo=git&logoColor=b06aff)
-![GitHub](https://img.shields.io/badge/GitHub-0d0221?style=for-the-badge&logo=github&logoColor=b06aff)
-![VSCode](https://img.shields.io/badge/VSCode-0d0221?style=for-the-badge&logo=visualstudiocode&logoColor=b06aff)
-![Linux](https://img.shields.io/badge/Linux-0d0221?style=for-the-badge&logo=linux&logoColor=b06aff)
-
-<br/>
-
-</div>
+<br clear="right"/>
 
 ---
 
