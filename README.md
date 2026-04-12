@@ -57,10 +57,6 @@
 
 <p align="center"><img src="https://count.getloli.com/get/@BocchiV?theme=moebooru"/></p>
 
-<p align="center">
-  <img src="https://stats.tosh1ki.de/api?show_bg=1&username=BocchiV" alt="BocchiV's github stats"/>
-</p>
-
 <br/>
 
 ---
@@ -91,3 +87,7 @@ it's what remains after the noise stops.
 </p>
 
 <br/>
+
+<p align="center">
+  <img src="https://stats.tosh1ki.de/api?show_bg=1&username=BocchiV" alt="BocchiV's github stats"/>
+</p>
