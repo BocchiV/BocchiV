@@ -1,9 +1,9 @@
 <!-- 🖼️ GÖRSEL 1: img/banner.webp — 1200×400px
      Karanlık atmosferik sahne — anime bg, cyberpunk, dark corridor
      MiyagawaMizu'nun bg.webp'si gibi tam genişlik açılış görseli -->
-![](./img/banner.jpg)
+![](./img/waguri_domain.jpg)
 
-<a href="https://github.com/BocchiV"><img align="right" width="380" src="./img/char_1.jpg"/></a>
+<a href="https://github.com/BocchiV"><img align="right" width="380" src="./img/waguri_annoying.jpg"/></a>
 
 <br/>
 
@@ -40,7 +40,7 @@
      Piksel/chibi ya da atmosferik küçük karakter -->
 ## **⚡ stack**
 
-<a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/char_2.jpg"/></a>
+<a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/waguri_surat-ifadesi.jpg"/></a>
 
 <br/>
 
@@ -58,7 +58,7 @@
 
 <!-- 🖼️ GÖRSEL 3: img/char_3.webp — ~120px genişlik, align=right
      Üzgün/düşünceli küçük karakter — MiyagawaMizu'nun marin_sad gibi -->
-<a href="https://github.com/BocchiV"><img align="right" width="120" src="./img/char_3.jpg"/></a>
+<a href="https://github.com/BocchiV"><img align="right" width="120" src="./img/waguri_pfft.jpg"/></a>
 
 <p align="center"><img width="55%" src="https://streak-stats.demolab.com?user=BocchiV&theme=dark&background=0d1117&border=00d4ff&ring=00d4ff&fire=00d4ff&currStreakLabel=00d4ff&sideLabels=00d4ff&dates=8b949e&sideNums=ffffff&currStreakNum=ffffff"/></p>
 
@@ -72,7 +72,7 @@
 
 <!-- 🖼️ GÖRSEL 4: img/char_4.webp — ~120px genişlik, align=left
      Küçük smugface/gizemli bakan karakter — MiyagawaMizu'nun marin_smug gibi -->
-<a href="https://github.com/BocchiV"><img align="left" width="120" src="./img/char_4.jpg"/></a>
+<a href="https://github.com/BocchiV"><img align="left" width="120" src="./img/waguri_what.jpg"/></a>
 
 <br/>
 
