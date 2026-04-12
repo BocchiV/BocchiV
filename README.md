@@ -102,5 +102,3 @@ it's what remains after the noise stops.
 </p>
 
 <br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,12,19&height=120&section=footer" width="100%"/>
