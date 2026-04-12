@@ -4,7 +4,7 @@
 
 <br/>
 
-### `ghost signal detected`
+### `Light of Creation`
 
 ```
   ██╗   ██╗
@@ -14,17 +14,17 @@
     ╚═══╝   — AfterLife
 ```
 
-- location: **AfterLife**
-- occupation: **building Project Lydia**
-- stack: **TypeScript · React · Node.js · Python**
-- signal: **still broadcasting**
-- status: **probably overthinking it**
+- Location: **AfterLife**
+- Occupation: **building Project Lydia**
+- Stack: **TypeScript · React · Node.js · Python**
+- Signal: **still broadcasting**
+- Status: **probably overthinking it**
 
 <br/><br/>
 
 ---
 
-## **⚡ stack**
+## **⚡ Stack**
 
 <a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/waguri_pout.jpg"/></a>
 
