@@ -64,13 +64,7 @@
 <br/>
 
 ```
-jacked in from a city that never sleeps.
-
-Project Lydia is not just a project —
-it's a signal sent past the Blackwall.
-
-AfterLife is not a place.
-it's what remains after the flatline.
+[RELIC: ACTIVE]
 ```
 
 <br clear="left"/><br/>
