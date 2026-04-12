@@ -1,8 +1,8 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:050508,50:0d1117,100:00aaff&height=200&section=header&text=BocchiV&fontSize=72&fontColor=ffffff&animation=fadeIn&fontAlignY=50&desc=keyfine%20yapıyorum&descSize=16&descColor=00aaff&descAlignY=68" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:050508,50:0d1117,100:00aaff&height=200&section=header&text=BocchiV&fontSize=72&fontColor=ffffff&animation=fadeIn&fontAlignY=50&desc=just%20building%20for%20the%20love%20of%20it&descSize=16&descColor=00aaff&descAlignY=68" width="100%"/>
 
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=15&duration=2800&pause=1200&color=00AAFF&center=true&vCenter=true&repeat=true&width=520&lines=building+things+for+fun;AI+%26+full-stack+developer;Stellar+Blade+enjoyer+%E2%9A%94%EF%B8%8F;currently+exploring+the+Eidos+9;ships+code+like+Eve+ships+Naytibas" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=15&duration=2800&pause=1200&color=00AAFF&center=true&vCenter=true&repeat=true&width=520&lines=building+things+for+fun;probably+overthinking+it;ships+when+it%27s+ready;night+owl+%F0%9F%8C%99;just+vibing" />
 
 </div>
 
@@ -14,11 +14,13 @@
 
 ```ts
 const BocchiV = {
-  vibe:      "keyfine yapıyorum",
-  stack:     ["TypeScript", "React", "Node.js", "Python"],
-  interests: ["AI / LLMs", "prompt engineering", "game dev"],
-  currently: "building Project Lydia",
-  irl:       "⚔️  Stellar Blade enjoyer",
+  vibe:      "creating for the love of it",
+  stack:     ["TypeScript", "React", "Node.js", "Python",
+              "PostgreSQL", "Docker", "REST APIs", "Git",
+              "Linux", "Tailwind CSS", "Vite", "Express"],
+  interests: ["creation is very close"],
+  currently: "building Projects Lydia",
+  irl:       "AfterLife",
   status:    "probably listening to the OST rn",
 };
 ```
@@ -52,21 +54,16 @@ const BocchiV = {
 
 ---
 
-### `> currently playing`
-
 <div align="center">
 
 ```
-╔══════════════════════════════════════════╗
-║           ⚔  STELLAR BLADE              ║
-║  ──────────────────────────────────────  ║
-║  "The surface… I have to reach it."     ║
-║                              — Eve      ║
-║  ──────────────────────────────────────  ║
-║  platform   PS5                         ║
-║  status     probably on NG+             ║
-║  OST        immaculate  🎵              ║
-╚══════════════════════════════════════════╝
+╔══════════════════════════════════════════════╗
+║                                              ║
+║  "Don't fight for their future.              ║
+║        Fight for yours."                     ║
+║                                  — Raven     ║
+║                                              ║
+╚══════════════════════════════════════════════╝
 ```
 
 </div>
