@@ -40,7 +40,7 @@
      Piksel/chibi ya da atmosferik küçük karakter -->
 ## **⚡ stack**
 
-<a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/waguri_surat-ifadesi.jpg"/></a>
+<a href="https://github.com/BocchiV"><img align="left" width="140" src="./img/waguri_pout.jpg"/></a>
 
 <br/>
 
