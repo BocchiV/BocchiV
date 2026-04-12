@@ -10,11 +10,11 @@
   </a>
 </p>
 
-- Location: **AfterLife**
-- Occupation: **building Project Lydia**
+- Location: **Night City · AfterLife**
+- Occupation: **netrunner · building Project Lydia**
 - Stack: **TypeScript · React · Node.js · Python**
-- Signal: **still broadcasting**
-- Status: **probably overthinking it**
+- Signal: **bouncing off the Blackwall**
+- Status: **chrome not included**
 
 <br/><br/>
 
@@ -64,13 +64,13 @@
 <br/>
 
 ```
-i build in a city that forgot the sun.
+jacked in from a city that never sleeps.
 
 Project Lydia is not just a project —
-it's a signal sent into the void.
+it's a signal sent past the Blackwall.
 
 AfterLife is not a place.
-it's what remains after the noise stops.
+it's what remains after the flatline.
 ```
 
 <br clear="left"/><br/>
