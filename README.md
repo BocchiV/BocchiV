@@ -87,22 +87,18 @@ const BocchiV = {
 
 <div align="center">
 
-```
-  ╔══════════════════════════════════════════╗
-  ║                                          ║
-  ║   "Don't fight for their future.         ║
-  ║         Fight for yours."                ║
-  ║                            — Raven       ║
-  ║                                          ║
-  ╚══════════════════════════════════════════╝
-```
-
 <br/>
 
-<img src="https://komarev.com/ghpvc/?username=BocchiV&style=flat-square&color=00d4ff&label=profile+views" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=13&duration=3500&pause=99999&color=00d4ff&center=true&vCenter=true&repeat=false&width=480&height=20&lines=%22Don%27t+fight+for+their+future.+Fight+for+yours.%22" />
+
+<sub>— Raven</sub>
+
+<br/><br/>
+
+<img src="https://komarev.com/ghpvc/?username=BocchiV&style=for-the-badge&color=0d0221&labelColor=00d4ff&label=PROFILE+VIEWS" />
 
 </div>
 
 <br/>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,50:00d4ff,100:00aaff&height=100&section=footer&reversal=true" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0221,50:00d4ff,100:0d0221&height=120&section=footer&reversal=false" width="100%"/>
