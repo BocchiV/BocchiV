@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.bocchiv.neonpinball'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.bocchiv.neonpinball"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('keystore/release.jks')
+            storePassword 'neonpinball'
+            keyAlias 'neonpinball'
+            keyPassword 'neonpinball'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    sourceSets {
+        main {
+            // Oyun dosyaları depo kökündeki web/ klasöründen gelir
+            assets.srcDirs = ['src/main/assets', '../../web']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
