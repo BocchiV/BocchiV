@@ -45,6 +45,13 @@ jobs:
           mkdir -p dist
           cp android/app/build/outputs/apk/release/app-release.apk dist/NeonPinball.apk
 
+      - name: APK içeriğini doğrula (oyun dosyaları pakette mi?)
+        run: |
+          unzip -l dist/NeonPinball.apk
+          for f in assets/index.html assets/game.js assets/style.css; do
+            unzip -l dist/NeonPinball.apk | grep -q "$f" || { echo "HATA: $f APK içinde yok!"; exit 1; }
+          done
+
       - name: APK artifact yükle
         uses: actions/upload-artifact@v4
         with:
