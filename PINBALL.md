@@ -10,6 +10,7 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 
 ## ✨ Özellikler
 
+- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Her bölüm farklıdır: 6 renk temasından biri (Neon, Magma, Zümrüt, Buzul, Galaksi, Altın), 2-4 bumper farklı dizilimde, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi
 - **Gerçekçi fizik**: 240 Hz alt adımlı fizik motoru, dönen flipper çarpışmaları, top-top çarpışması (multiball)
 - **Masa öğeleri**: 3 pop bumper, 2 slingshot, 3'lü drop target bankı, rollover şeritleri, spinner, saucer (kilit çukuru), tek yön kapılı fırlatma kanalı
 - **Oyun mekanikleri**:

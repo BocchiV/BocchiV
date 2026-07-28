@@ -53,6 +53,26 @@ html, body {
   font-size: 10px; letter-spacing: 6px; color: #4d6fa8; margin-top: 2px;
 }
 
+#goal-wrap {
+  width: 128px; height: 5px;
+  margin-top: 7px;
+  border-radius: 3px;
+  background: rgba(80, 120, 220, .18);
+  overflow: hidden;
+}
+#goal-bar {
+  height: 100%; width: 0%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #21c7ff, #ff2fb0);
+  box-shadow: 0 0 8px rgba(33, 199, 255, .8);
+  transition: width .25s ease;
+}
+#goal-label {
+  font-size: 9px; letter-spacing: 3px; color: #4d6fa8; margin-top: 4px;
+}
+
+#level { color: #7ef9ff; text-shadow: 0 0 8px rgba(126, 249, 255, .8); }
+
 #hud-right { display: flex; gap: 8px; align-items: center; pointer-events: auto; }
 
 .chip {

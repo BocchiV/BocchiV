@@ -101,7 +101,33 @@ const SFX = (() => {
 
 function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (_) {} }
 
-/* ---------------- Masa geometrisi ---------------- */
+/* ---------------- Tohumlu RNG (bölüm üretimi) ---------------- */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function withAlpha(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+}
+
+/* ---------------- Bölüm temaları ---------------- */
+const THEMES = [
+  { name: 'NEON',    wall: '#2b5cc4', post: '#3f6fd8', accent: '#c92f7a', bumper: '#ff2fb0', bumperHi: '#ff9fce', bumperDark: '#7a0f56', target: '#7ef9ff', targetGlow: '#21c7ff', saucer: '#6a2fff', saucerHi: '#b98cff', flipA: '#ffd166', flipB: '#ff8f3f', deco1: '#ff2fb0', deco2: '#2178ff' },
+  { name: 'MAGMA',   wall: '#b8442a', post: '#d85f3f', accent: '#e0762f', bumper: '#ff6b2f', bumperHi: '#ffc09f', bumperDark: '#6e2208', target: '#ffd166', targetGlow: '#ffb021', saucer: '#ff2f6b', saucerHi: '#ff8cae', flipA: '#ffe08a', flipB: '#ff5f3f', deco1: '#ff6b2f', deco2: '#c42121' },
+  { name: 'ZÜMRÜT',  wall: '#1f9e64', post: '#2fc47f', accent: '#2fb8a0', bumper: '#00e676', bumperHi: '#a4ffce', bumperDark: '#065e2f', target: '#b2ff59', targetGlow: '#7ed321', saucer: '#00bfa5', saucerHi: '#7affec', flipA: '#eaff7b', flipB: '#ffd166', deco1: '#00e676', deco2: '#0e7a52' },
+  { name: 'BUZUL',   wall: '#3f7fc8', post: '#5f9fe0', accent: '#4fb8e0', bumper: '#7ef9ff', bumperHi: '#e0feff', bumperDark: '#0f4e6e', target: '#ffffff', targetGlow: '#9fdcff', saucer: '#4f7fff', saucerHi: '#9fb8ff', flipA: '#e0feff', flipB: '#4fb8e0', deco1: '#7ef9ff', deco2: '#2153c4', },
+  { name: 'GALAKSİ', wall: '#7b3fd8', post: '#9f6fe8', accent: '#b02f9e', bumper: '#b26bff', bumperHi: '#e2ccff', bumperDark: '#3d1470', target: '#ff9ff3', targetGlow: '#ff5fd8', saucer: '#ff2fb0', saucerHi: '#ff8cd6', flipA: '#ffd166', flipB: '#ff5f9e', deco1: '#b26bff', deco2: '#4b21c4' },
+  { name: 'ALTIN',   wall: '#b8922a', post: '#d8b23f', accent: '#c46a21', bumper: '#ffd166', bumperHi: '#fff0c0', bumperDark: '#6e4c08', target: '#fff3b0', targetGlow: '#ffd166', saucer: '#ff8f3f', saucerHi: '#ffc09f', flipA: '#fff3b0', flipB: '#ff8f3f', deco1: '#ffd166', deco2: '#a86a10' },
+];
+let theme = THEMES[0];
+
+/* ---------------- Masa geometrisi (bölüm başına üretilir) ---------------- */
 // Segment: {x1,y1,x2,y2, e:restitüsyon, tag}
 const segs = [];
 function seg(x1, y1, x2, y2, e = 0.5, tag = null) {
@@ -110,9 +136,29 @@ function seg(x1, y1, x2, y2, e = 0.5, tag = null) {
   return s;
 }
 
-// Üst kubbe yayı
 const ARC = { cx: 270, cy: 255, r: 255 };
-(function buildArc() {
+let gateSeg = null, slingL = null, slingR = null;
+const bumpers = [];
+const targets = [];
+const lanes = [];
+const saucer = { x: 432, y: 430, r: 20, cooldown: 0, glow: 0, locks: 0 };
+const spinner = { y: 500, angle: 0, vel: 0, score: 0 };
+let bankResetTimer = 0;
+let levelGravity = GRAVITY;
+
+// Rastgele bölüm inşası: tema, bumper dizilimi, hedef bankı yönü,
+// şerit sayısı, saucer konumu ve yerçekimi tohuma göre değişir.
+function buildLevel(seed) {
+  const rng = mulberry32(seed);
+  theme = THEMES[Math.floor(rng() * THEMES.length)];
+
+  segs.length = 0;
+  bumpers.length = 0;
+  targets.length = 0;
+  lanes.length = 0;
+  bankResetTimer = 0;
+
+  // Üst kubbe yayı
   const N = 26;
   let px = ARC.cx + ARC.r * Math.cos(Math.PI), py = ARC.cy + ARC.r * Math.sin(Math.PI);
   for (let i = 1; i <= N; i++) {
@@ -121,60 +167,86 @@ const ARC = { cx: 270, cy: 255, r: 255 };
     seg(px, py, x, y, 0.45, 'arc');
     px = x; py = y;
   }
-})();
 
-// Dış duvarlar
-seg(15, 255, 15, 760, 0.5);                    // sol duvar
-seg(525, 255, 525, 940, 0.5);                  // sağ duvar
-seg(15, 760, 147, 848, 0.42, 'funnel');        // sol huni
-seg(LANE_X, 760, 355, 848, 0.42, 'funnel');    // sağ huni
-seg(LANE_X, 345, LANE_X, 760, 0.5);            // kanal iç duvarı
-seg(LANE_X, 940, 525, 940, 0.2, 'laneFloor');  // kanal tabanı
-const gateSeg = seg(LANE_X, 315, 525, 278, 0.35, 'gate');  // tek yön kapısı
-gateSeg.enabled = false;
+  // Dış duvarlar
+  seg(15, 255, 15, 760, 0.5);                    // sol duvar
+  seg(525, 255, 525, 940, 0.5);                  // sağ duvar
+  seg(15, 760, 147, 848, 0.42, 'funnel');        // sol huni
+  seg(LANE_X, 760, 355, 848, 0.42, 'funnel');    // sağ huni
+  seg(LANE_X, 345, LANE_X, 760, 0.5);            // kanal iç duvarı
+  seg(LANE_X, 940, 525, 940, 0.2, 'laneFloor');  // kanal tabanı
+  gateSeg = seg(LANE_X, 315, 525, 278, 0.35, 'gate');  // tek yön kapısı
+  gateSeg.enabled = false;
 
-// Üst hat bölücüleri (rollover şeritleri)
-seg(143, 52, 143, 140, 0.5, 'post');
-seg(215, 52, 215, 140, 0.5, 'post');
-seg(287, 52, 287, 140, 0.5, 'post');
-seg(359, 52, 359, 140, 0.5, 'post');
+  // Rollover şeritleri: 2-4 adet
+  const laneN = 2 + Math.floor(rng() * 3);
+  const laneW = 72;
+  const laneLeft = 251 - (laneN * laneW) / 2;
+  for (let i = 0; i <= laneN; i++) seg(laneLeft + i * laneW, 52, laneLeft + i * laneW, 140, 0.5, 'post');
+  for (let i = 0; i < laneN; i++) lanes.push({ x: laneLeft + laneW / 2 + i * laneW, y: 100, lit: false, flash: 0 });
 
-// Slingshot gövde duvarları (alt yüzler sert değil)
-seg(105, 615, 105, 715, 0.4);
-seg(105, 715, 175, 750, 0.4);
-seg(397, 615, 397, 715, 0.4);
-seg(397, 715, 327, 750, 0.4);
-const slingL = seg(105, 615, 175, 750, 0.9, 'slingL');   // aktif yüz
-const slingR = seg(397, 615, 327, 750, 0.9, 'slingR');
+  // Slingshotlar (sabit çerçeve)
+  seg(105, 615, 105, 715, 0.4);
+  seg(105, 715, 175, 750, 0.4);
+  seg(397, 615, 397, 715, 0.4);
+  seg(397, 715, 327, 750, 0.4);
+  slingL = seg(105, 615, 175, 750, 0.9, 'slingL');
+  slingR = seg(397, 615, 327, 750, 0.9, 'slingR');
 
-// Drop target bankı arka duvarı
-seg(60, 402, 60, 540, 0.5);
-seg(60, 402, 90, 396, 0.5);
-seg(60, 540, 90, 546, 0.5);
+  // Drop target bankı: sol veya sağ tarafta, 3-4 hedef
+  const bankRight = rng() < 0.5;
+  const tN = 3 + (rng() < 0.35 ? 1 : 0);
+  const tx = bankRight ? 424 : 78;
+  const wx = bankRight ? 442 : 60;
+  const capDx = bankRight ? -30 : 30;
+  const y0 = 400;
+  const wallH = tN * 42 + 14;
+  seg(wx, y0, wx, y0 + wallH, 0.5);
+  seg(wx, y0, wx + capDx, y0 - 6, 0.5);
+  seg(wx, y0 + wallH, wx + capDx, y0 + wallH + 6, 0.5);
+  for (let i = 0; i < tN; i++) {
+    const t = { x: tx, y1: y0 + 10 + i * 42, y2: y0 + 10 + i * 42 + 32, up: true, flash: 0 };
+    t.seg = seg(t.x, t.y1, t.x, t.y2, 0.6, 'target');
+    t.seg.target = t;
+    targets.push(t);
+  }
 
-/* ---------------- Masa öğeleri ---------------- */
-const bumpers = [
-  { x: 170, y: 250, r: 30, flash: 0, kick: 950 },
-  { x: 332, y: 250, r: 30, flash: 0, kick: 950 },
-  { x: 251, y: 355, r: 30, flash: 0, kick: 950 },
-];
+  // Saucer bankın karşı tarafında
+  saucer.x = bankRight ? 88 : 432;
+  saucer.y = 400 + rng() * 70;
+  saucer.locks = 0;
+  saucer.cooldown = 0;
+  saucer.glow = 0;
 
-const targets = [
-  { x: 78, y1: 410, y2: 442, up: true, flash: 0 },
-  { x: 78, y1: 452, y2: 484, up: true, flash: 0 },
-  { x: 78, y1: 494, y2: 526, up: true, flash: 0 },
-];
-targets.forEach(t => { t.seg = seg(t.x, t.y1, t.x, t.y2, 0.6, 'target'); t.seg.target = t; });
-let bankResetTimer = 0;
+  // Bumperlar: 2-4 adet, aday noktalardan seçilip hafifçe kaydırılır
+  const spots = [[170, 250], [332, 250], [251, 355], [251, 175], [150, 390], [352, 390], [251, 265]];
+  for (let i = spots.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [spots[i], spots[j]] = [spots[j], spots[i]];
+  }
+  const bN = 2 + Math.floor(rng() * 3);
+  for (const [sx, sy] of spots) {
+    if (bumpers.length >= bN) break;
+    const x = sx + (rng() * 24 - 12), y = sy + (rng() * 24 - 12);
+    const r = 26 + rng() * 6;
+    if (bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 28)) continue;
+    bumpers.push({ x, y, r, flash: 0, kick: 900 + rng() * 160 });
+  }
 
-const lanes = [
-  { x: 179, y: 105, lit: false, flash: 0 },
-  { x: 251, y: 98,  lit: false, flash: 0 },
-  { x: 323, y: 105, lit: false, flash: 0 },
-];
+  // Bölüme özgü yerçekimi
+  levelGravity = 1700 + rng() * 250;
 
-const saucer = { x: 432, y: 430, r: 20, cooldown: 0, glow: 0, locks: 0 };
-const spinner = { y: 500, angle: 0, vel: 0, score: 0 };
+  spinner.angle = 0;
+  spinner.vel = 0;
+  spinner.score = 0;
+
+  buildTableCache();
+}
+
+/* ---------------- Bölüm hedefleri ---------------- */
+function targetFor(level) {
+  return Math.round(10000 * Math.pow(1.5, level - 1) / 500) * 500;
+}
 
 /* ---------------- Flipperlar ---------------- */
 function makeFlipper(px, py, side) {
@@ -220,6 +292,11 @@ const state = {
   glow: 0,
   time: 0,
   serveTimer: 0,
+  level: 1,                // bölüm sistemi
+  levelScore: 0,
+  levelTarget: 10000,
+  levelPhase: null,        // null | 'celebrate'
+  levelTimer: 0,
 };
 
 try { state.hiscore = parseInt(localStorage.getItem('neonpinball.hiscore') || '0', 10) || 0; } catch (_) {}
@@ -251,7 +328,9 @@ const bannerEl = document.getElementById('banner');
 function addScore(base, x, y, label) {
   const pts = base * state.mult * (state.multiball ? 2 : 1);
   state.score += pts;
+  state.levelScore += pts;
   if (x !== undefined) popup(x, y, '+' + fmt(pts));
+  if (state.mode === 'playing' && !state.levelPhase && state.levelScore >= state.levelTarget) beginLevelUp();
   scoreEl.classList.remove('bump');
   void scoreEl.offsetWidth;
   scoreEl.classList.add('bump');
@@ -278,9 +357,52 @@ function banner(text) {
   bannerTimer = setTimeout(() => bannerEl.classList.remove('show'), 1700);
 }
 
+const levelEl = document.getElementById('level');
+const goalBarEl = document.getElementById('goal-bar');
+const goalLabelEl = document.getElementById('goal-label');
+let lastGoalPct = -1;
+
 function updateHud() {
   multEl.textContent = 'x' + state.mult * (state.multiball ? 2 : 1);
   ballsEl.textContent = '●'.repeat(Math.max(0, state.balls)) || '—';
+  levelEl.textContent = 'B' + state.level;
+  goalLabelEl.textContent = 'HEDEF ' + fmt(state.levelTarget);
+}
+
+function updateGoalBar() {
+  const pct = Math.min(100, Math.round(state.levelScore / state.levelTarget * 100));
+  if (pct !== lastGoalPct) {
+    lastGoalPct = pct;
+    goalBarEl.style.width = pct + '%';
+  }
+}
+
+/* ---------------- Bölüm geçişi ---------------- */
+function beginLevelUp() {
+  state.levelPhase = 'celebrate';
+  state.levelTimer = 1.8;
+  const bonus = 2500 * state.level;
+  state.score += bonus;
+  activeBalls.length = 0;
+  serveBall = null;
+  spawnParticles(251, 480, theme.target, 40, 420);
+  banner('BÖLÜM ' + state.level + ' TAMAM! +' + fmt(bonus));
+  SFX.multiball(); buzz([50, 60, 50, 60, 90]);
+}
+
+function advanceLevel() {
+  state.level++;
+  state.balls = Math.min(5, state.balls + 1);   // bölüm ödülü: +1 top
+  state.levelScore = 0;
+  state.levelTarget = targetFor(state.level);
+  state.levelPhase = null;
+  state.mult = 1;
+  state.multiball = false;
+  buildLevel((Math.random() * 2 ** 31) | 0);
+  newServe();
+  banner('BÖLÜM ' + state.level + ' • ' + theme.name);
+  SFX.extraBall();
+  updateHud();
 }
 
 /* ---------------- Top yönetimi ---------------- */
@@ -370,17 +492,19 @@ function startGame() {
   state.mult = 1;
   state.multiball = false;
   state.extraGiven = [];
-  saucer.locks = 0;
-  saucer.cooldown = 0;
+  state.level = 1;
+  state.levelScore = 0;
+  state.levelTarget = targetFor(1);
+  state.levelPhase = null;
   activeBalls.length = 0;
   particles.length = 0;
   popups.length = 0;
-  targets.forEach(t => { t.up = true; t.seg.enabled = true; });
-  lanes.forEach(l => l.lit = false);
+  buildLevel((Math.random() * 2 ** 31) | 0);   // her oyun rastgele bölüm
   scoreEl.textContent = '0';
   updateHud();
   newServe();
   showPanel(null);
+  banner('BÖLÜM 1 • ' + theme.name);
 }
 
 function gameOver() {
@@ -538,7 +662,7 @@ function ballVsBall(a, b) {
 }
 
 function stepBall(b, dt) {
-  b.vy += GRAVITY * dt;
+  b.vy += levelGravity * dt;
   const sp = Math.hypot(b.vx, b.vy);
   if (sp > MAX_SPEED) { b.vx *= MAX_SPEED / sp; b.vy *= MAX_SPEED / sp; }
   const prevY = b.y, prevX = b.x;
@@ -646,6 +770,12 @@ function ejectSaucer(pos) {
 function update(dt) {
   state.time += dt;
 
+  // Bölüm geçiş kutlaması: toplar temizlendi, sayaç bitince yeni bölüm kur
+  if (state.levelPhase === 'celebrate') {
+    state.levelTimer -= dt;
+    if (state.levelTimer <= 0) advanceLevel();
+  }
+
   if (state.ballSave > 0) state.ballSave -= dt;
   if (saucer.cooldown > 0) saucer.cooldown -= dt;
   if (saucer.glow > 0) saucer.glow -= dt * 1.4;
@@ -726,6 +856,7 @@ function update(dt) {
     state.displayScore += Math.ceil(diff * Math.min(1, dt * 12));
     scoreEl.textContent = fmt(state.displayScore);
   }
+  updateGoalBar();
 }
 
 /* ---------------- Çizim ---------------- */
@@ -749,7 +880,7 @@ function buildTableCache() {
   // dekoratif ışıma halkaları
   c.save();
   c.globalAlpha = 0.08;
-  for (const [x, y, r, col] of [[251, 355, 150, '#ff2fb0'], [251, 250, 230, '#2178ff'], [270, 620, 200, '#6a2fff']]) {
+  for (const [x, y, r, col] of [[251, 355, 150, theme.deco1], [251, 250, 230, theme.deco2], [270, 620, 200, theme.saucer]]) {
     const g = c.createRadialGradient(x, y, 0, x, y, r);
     g.addColorStop(0, col);
     g.addColorStop(1, 'transparent');
@@ -780,24 +911,24 @@ function buildTableCache() {
   }
   for (const s of segs) {
     if (s.tag === 'gate' || s.tag === 'target' || s.tag === 'slingL' || s.tag === 'slingR') continue;
-    if (s.tag === 'post') neonSeg(s, '#3f6fd8', 5);
-    else neonSeg(s, '#2b5cc4', 6);
+    if (s.tag === 'post') neonSeg(s, theme.post, 5);
+    else neonSeg(s, theme.wall, 6);
   }
   c.shadowBlur = 0;
 
   // slingshot gövdeleri
-  for (const [pts, col] of [
-    [[[105, 615], [105, 715], [175, 750]], '#c92f7a'],
-    [[[397, 615], [397, 715], [327, 750]], '#c92f7a'],
+  for (const pts of [
+    [[105, 615], [105, 715], [175, 750]],
+    [[397, 615], [397, 715], [327, 750]],
   ]) {
     c.beginPath();
     c.moveTo(pts[0][0], pts[0][1]);
     pts.slice(1).forEach(p => c.lineTo(p[0], p[1]));
     c.closePath();
-    c.fillStyle = 'rgba(201, 47, 122, 0.18)';
+    c.fillStyle = withAlpha(theme.accent, 0.18);
     c.fill();
-    c.strokeStyle = col;
-    c.shadowColor = col; c.shadowBlur = 10;
+    c.strokeStyle = theme.accent;
+    c.shadowColor = theme.accent; c.shadowBlur = 10;
     c.lineWidth = 3;
     c.stroke();
     c.shadowBlur = 0;
@@ -806,12 +937,12 @@ function buildTableCache() {
   // saucer yuvası
   c.beginPath();
   c.arc(saucer.x, saucer.y, saucer.r + 4, 0, TAU);
-  c.strokeStyle = '#6a2fff';
-  c.shadowColor = '#6a2fff'; c.shadowBlur = 14;
+  c.strokeStyle = theme.saucer;
+  c.shadowColor = theme.saucer; c.shadowBlur = 14;
   c.lineWidth = 3;
   c.stroke();
   c.shadowBlur = 0;
-  c.fillStyle = 'rgba(106, 47, 255, 0.15)';
+  c.fillStyle = withAlpha(theme.saucer, 0.15);
   c.fill();
 
   // yazılar
@@ -892,13 +1023,13 @@ function drawBumpers() {
   for (const b of bumpers) {
     const f = b.flash > 0 ? b.flash / 0.3 : 0;
     const g = ctx.createRadialGradient(b.x, b.y, 4, b.x, b.y, b.r);
-    g.addColorStop(0, f > 0 ? '#ffffff' : '#ff9fce');
-    g.addColorStop(0.55, '#ff2fb0');
-    g.addColorStop(1, '#7a0f56');
+    g.addColorStop(0, f > 0 ? '#ffffff' : theme.bumperHi);
+    g.addColorStop(0.55, theme.bumper);
+    g.addColorStop(1, theme.bumperDark);
     ctx.beginPath();
     ctx.arc(b.x, b.y, b.r, 0, TAU);
     ctx.fillStyle = g;
-    ctx.shadowColor = '#ff2fb0';
+    ctx.shadowColor = theme.bumper;
     ctx.shadowBlur = 14 + f * 26;
     ctx.fill();
     ctx.shadowBlur = 0;
@@ -916,13 +1047,13 @@ function drawTargets() {
   for (const t of targets) {
     const cy = (t.y1 + t.y2) / 2;
     if (t.up) {
-      ctx.fillStyle = '#7ef9ff';
-      ctx.shadowColor = '#21c7ff';
+      ctx.fillStyle = theme.target;
+      ctx.shadowColor = theme.targetGlow;
       ctx.shadowBlur = 12;
       ctx.fillRect(t.x - 4, t.y1, 8, t.y2 - t.y1);
       ctx.shadowBlur = 0;
     } else {
-      ctx.fillStyle = 'rgba(126, 249, 255, 0.15)';
+      ctx.fillStyle = withAlpha(theme.target, 0.15);
       ctx.fillRect(t.x - 3, t.y1, 6, t.y2 - t.y1);
       if (t.flash > 0) {
         ctx.fillStyle = `rgba(255, 255, 255, ${t.flash})`;
@@ -936,8 +1067,8 @@ function drawSaucer() {
   const pulse = 0.5 + 0.5 * Math.sin(state.time * 3);
   ctx.beginPath();
   ctx.arc(saucer.x, saucer.y, saucer.r - 5, 0, TAU);
-  ctx.fillStyle = `rgba(106, 47, 255, ${0.25 + 0.3 * pulse + saucer.glow * 0.4})`;
-  ctx.shadowColor = '#b98cff';
+  ctx.fillStyle = withAlpha(theme.saucer, 0.25 + 0.3 * pulse + saucer.glow * 0.4);
+  ctx.shadowColor = theme.saucerHi;
   ctx.shadowBlur = 10 + saucer.glow * 30;
   ctx.fill();
   ctx.shadowBlur = 0;
@@ -945,8 +1076,8 @@ function drawSaucer() {
   for (let i = 0; i < 3; i++) {
     ctx.beginPath();
     ctx.arc(saucer.x - 16 + i * 16, saucer.y + saucer.r + 14, 4, 0, TAU);
-    ctx.fillStyle = i < saucer.locks ? '#b98cff' : 'rgba(185, 140, 255, 0.2)';
-    if (i < saucer.locks) { ctx.shadowColor = '#b98cff'; ctx.shadowBlur = 8; }
+    ctx.fillStyle = i < saucer.locks ? theme.saucerHi : withAlpha(theme.saucerHi, 0.2);
+    if (i < saucer.locks) { ctx.shadowColor = theme.saucerHi; ctx.shadowBlur = 8; }
     ctx.fill();
     ctx.shadowBlur = 0;
   }
@@ -1001,12 +1132,12 @@ function drawFlippers() {
   for (const f of [flipL, flipR]) {
     const tip = flipperTip(f, f.angle);
     const grad = ctx.createLinearGradient(f.px, f.py, tip.x, tip.y);
-    grad.addColorStop(0, '#ffd166');
-    grad.addColorStop(1, '#ff8f3f');
+    grad.addColorStop(0, theme.flipA);
+    grad.addColorStop(1, theme.flipB);
     ctx.strokeStyle = grad;
     ctx.lineWidth = f.r * 2;
     ctx.lineCap = 'round';
-    ctx.shadowColor = '#ff8f3f';
+    ctx.shadowColor = theme.flipB;
     ctx.shadowBlur = f.pressed ? 22 : 10;
     ctx.beginPath();
     ctx.moveTo(f.px, f.py);
@@ -1018,7 +1149,7 @@ function drawFlippers() {
     ctx.arc(f.px, f.py, f.r + 3, 0, TAU);
     ctx.fillStyle = '#1a2350';
     ctx.fill();
-    ctx.strokeStyle = '#ffd166';
+    ctx.strokeStyle = theme.flipA;
     ctx.lineWidth = 2;
     ctx.stroke();
   }
@@ -1209,8 +1340,12 @@ function frame(now) {
 
 /* ---------------- Başlat ---------------- */
 document.querySelector('#hiscore span').textContent = fmt(state.hiscore);
+buildLevel((Math.random() * 2 ** 31) | 0);   // menü arkaplanı için rastgele masa
 resize();
 updateHud();
 requestAnimationFrame(frame);
+
+// test kancası (otomatik testler için)
+window.__neonpinball = { state, addScore };
 
 })();
