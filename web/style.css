@@ -93,10 +93,15 @@ html, body {
   border: 1px solid rgba(120, 200, 255, .35);
   background: rgba(10, 18, 40, .6);
   color: #9fdcff;
-  font-size: 15px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  padding: 0;
 }
+.icon-btn svg {
+  display: block;
+  filter: drop-shadow(0 0 4px rgba(64, 180, 255, .7));
+}
+.icon-btn svg.hidden { display: none; }
 .icon-btn:active { background: rgba(64, 156, 255, .3); }
 
 /* ---------- Event banner ---------- */

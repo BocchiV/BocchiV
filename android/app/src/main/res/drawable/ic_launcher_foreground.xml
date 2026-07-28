@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Mini pinball masası: neon kubbe, bumper, top ve flipperlar -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
@@ -6,38 +7,103 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- dış halka -->
+    <!-- bumper ışıma halkaları -->
     <path
-        android:pathData="M54,24 a30,30 0 1,0 0.01,0 z M54,30 a24,24 0 1,1 -0.01,0 z"
-        android:fillColor="#21C7FF" />
-
-    <!-- sol flipper -->
+        android:pathData="M54,50 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0"
+        android:fillColor="#FF2FB0"
+        android:fillAlpha="0.18" />
     <path
-        android:pathData="M30,76 L50,86 A4,4 0 0 1 48,92 L30,84 A4.5,4.5 0 0 1 30,76 Z"
-        android:fillColor="#FFD166" />
+        android:pathData="M54,50 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"
+        android:fillColor="#FF2FB0"
+        android:fillAlpha="0.35" />
 
-    <!-- sağ flipper -->
+    <!-- kubbe ışıması (geniş, saydam) -->
     <path
-        android:pathData="M78,76 L58,86 A4,4 0 0 0 60,92 L78,84 A4.5,4.5 0 0 0 78,76 Z"
-        android:fillColor="#FFD166" />
+        android:pathData="M32,66 A24,24 0 0 1 76,66"
+        android:strokeColor="#21C7FF"
+        android:strokeWidth="8"
+        android:strokeAlpha="0.25"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
 
-    <!-- top -->
-    <path android:pathData="M54,40 a14,14 0 1,0 0.01,0 z">
+    <!-- kubbe ve kısa yan duvarlar -->
+    <path
+        android:pathData="M32,74 L32,66 A24,24 0 0 1 76,66 L76,74"
+        android:strokeColor="#21C7FF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- bumper -->
+    <path
+        android:pathData="M54,50 m-6.5,0 a6.5,6.5 0 1,0 13,0 a6.5,6.5 0 1,0 -13,0"
+        android:fillColor="#FF2FB0" />
+    <path
+        android:pathData="M54,50 m-2.8,0 a2.8,2.8 0 1,0 5.6,0 a2.8,2.8 0 1,0 -5.6,0"
+        android:fillColor="#FFFFFF" />
+
+    <!-- top (gradyanlı) -->
+    <path android:pathData="M45,60 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:type="radial"
-                android:centerX="50"
-                android:centerY="50"
-                android:gradientRadius="18">
+                android:centerX="43"
+                android:centerY="58"
+                android:gradientRadius="9">
                 <item android:offset="0.0" android:color="#FFFFFF" />
-                <item android:offset="0.6" android:color="#DFE9FF" />
+                <item android:offset="0.5" android:color="#DFE9FF" />
                 <item android:offset="1.0" android:color="#8194C9" />
             </gradient>
         </aapt:attr>
     </path>
 
-    <!-- neon nokta -->
+    <!-- sol flipper -->
+    <path android:pathData="M37.38,69.78 L51.38,75.78 A3.5,3.5 0 0 1 48.62,82.22 L34.62,76.22 A3.5,3.5 0 0 1 37.38,69.78 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="36"
+                android:startY="73"
+                android:endX="50"
+                android:endY="79">
+                <item android:offset="0.0" android:color="#FFD166" />
+                <item android:offset="1.0" android:color="#FF8F3F" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- sağ flipper -->
+    <path android:pathData="M70.62,69.78 L56.62,75.78 A3.5,3.5 0 0 0 59.38,82.22 L73.38,76.22 A3.5,3.5 0 0 0 70.62,69.78 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="72"
+                android:startY="73"
+                android:endX="58"
+                android:endY="79">
+                <item android:offset="0.0" android:color="#FFD166" />
+                <item android:offset="1.0" android:color="#FF8F3F" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- flipper pivotları -->
     <path
-        android:pathData="M54,18 a3,3 0 1,0 0.01,0 z"
-        android:fillColor="#FF2FB0" />
+        android:pathData="M36.5,73 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0"
+        android:fillColor="#1A2350"
+        android:strokeColor="#FFD166"
+        android:strokeWidth="1.4" />
+    <path
+        android:pathData="M71.5,73 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0"
+        android:fillColor="#1A2350"
+        android:strokeColor="#FFD166"
+        android:strokeWidth="1.4" />
+
+    <!-- kıvılcımlar -->
+    <path
+        android:pathData="M67,53 m-1.8,0 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0"
+        android:fillColor="#7EF9FF" />
+    <path
+        android:pathData="M41,37 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+        android:fillColor="#FFD166" />
 </vector>

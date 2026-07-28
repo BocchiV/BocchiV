@@ -1318,8 +1318,10 @@ document.getElementById('btn-restart').addEventListener('click', () => { SFX.ens
 document.getElementById('btn-pause').addEventListener('click', () => {
   if (state.mode === 'playing') pauseGame();
 });
-document.getElementById('btn-mute').addEventListener('click', function () {
-  this.textContent = SFX.toggle() ? '🔇' : '🔊';
+document.getElementById('btn-mute').addEventListener('click', () => {
+  const muted = SFX.toggle();
+  document.getElementById('icon-sound-on').classList.toggle('hidden', muted);
+  document.getElementById('icon-sound-off').classList.toggle('hidden', !muted);
 });
 
 document.addEventListener('visibilitychange', () => {
