@@ -9,6 +9,11 @@ on:
       - 'android/**'
       - '.github/workflows/build-apk.yml'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Sürüm etiketi (örn. v1.0.0). Boş bırakılırsa sadece artifact üretilir."
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -47,9 +52,10 @@ jobs:
           path: dist/NeonPinball.apk
           if-no-files-found: error
 
-      - name: Release oluştur (tag push)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Release oluştur (tag push veya elle tetikleme)
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag != '')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
           files: dist/NeonPinball.apk
           generate_release_notes: true
