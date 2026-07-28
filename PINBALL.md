@@ -11,16 +11,16 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 ## ✨ Özellikler
 
 - **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi
-- **8 özgün tema** — her bölüm bambaşka bir dünyada geçer, her temanın kendi sanat yönetimi vardır:
-  - **Teknik Çizim**: milimetrik plan kağıdı, kesikli çizgiler, artı işaretli hedef bumperlar
-  - **Retro CRT**: fosfor yeşili tüplü ekran, tarama çizgileri, ekranı süpüren ışık bandı
-  - **Günbatımı**: degrade gökyüzü, şeritli dev güneş, dağ silüetleri, mini güneş bumperlar
-  - **Derin Okyanus**: ışık hüzmeleri, yükselen kabarcıklar, dokunaçları kıpırdayan denizanası bumperlar
-  - **Volkan**: magma çatlakları, yükselen korlar, nabız gibi atan lav küresi bumperlar
-  - **Galaksi**: yıldız alanı, bulutsular, halkalı gezegen bumperlar
-  - **Orman**: yaprak silüetleri, gezinen ateşböcekleri, benekli mantar bumperlar
-  - **Şeker**: puantiyeli gece pasteli, düşen şeker taneleri, dönen naneli şeker bumperlar
-  - HUD renkleri, duvar stili, top izi ve parçacık efektleri de temayla birlikte değişir
+- **8 özgün tema, 8 farklı oyun konsepti** — her bölüm hem görsel olarak hem de **oynanış olarak** bambaşkadır:
+  - **Teknik Çizim** · *Raylı Bumperlar*: plan kağıdı estetiği; bumperlar kesikli raylar üzerinde sürekli hareket eder
+  - **Retro CRT** · *Piksel Tuğlalar*: masanın ortasında kırılabilir 15'lik tuğla duvarı — hepsini temizle, bonus kap
+  - **Günbatımı** · *Çöl Rüzgarı*: yön ve şiddeti değişen rüzgar topu savurur; üstteki gösterge rüzgarı gösterir
+  - **Derin Okyanus** · *Su Altı Fiziği*: düşük yerçekimi + su direnci; denizanası bumperlar yüzerek yer değiştirir
+  - **Volkan** · *Püskürme*: ortadaki gayzer önce uyarı verir, sonra patlar ve yakındaki topu göğe fırlatır
+  - **Galaksi** · *Yerçekimi Kuyuları*: gezegen bumperlar topu kendine çeker, top kavisli yörüngeler çizer
+  - **Orman** · *Büyüyen Mantarlar*: mantar bumperlar nefes alır gibi büyüyüp küçülür — çarpışma alanı da değişir
+  - **Şeker** · *Şurup Havuzları*: masadaki yapışkan şurup gölcükleri topu yavaşlatır
+  - HUD renkleri, duvar stili, top izi, ortam parçacıkları ve ses geri bildirimleri temayla birlikte değişir
 - **Gerçekçi fizik**: 240 Hz alt adımlı fizik motoru, dönen flipper çarpışmaları, top-top çarpışması (multiball)
 - **Masa öğeleri**: 3 pop bumper, 2 slingshot, 3'lü drop target bankı, rollover şeritleri, spinner, saucer (kilit çukuru), tek yön kapılı fırlatma kanalı
 - **Oyun mekanikleri**:

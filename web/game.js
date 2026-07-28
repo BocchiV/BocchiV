@@ -131,6 +131,8 @@ const THEMES = [
   { // 1 — mimari plan kağıdı: kesikli beyaz çizgiler, milimetrik kağıt
     name: 'TEKNİK ÇİZİM',
     hud: '#a8d8ff',
+    mechLabel: 'RAYLI BUMPERLAR',
+    mech: { bumperMotion: 'slideX' },
     wallStyle: { color: '#d8ecff', width: 3, blur: 0, dash: [12, 7] },
     accent: '#ffd166', target: '#ffe08a', targetGlow: '#ffd166',
     saucer: '#7fd4ff', saucerHi: '#c8ecff',
@@ -175,6 +177,8 @@ const THEMES = [
   { // 2 — eski tüplü ekran: fosfor yeşili, tarama çizgileri
     name: 'RETRO CRT',
     hud: '#4fff7f',
+    mechLabel: 'PİKSEL TUĞLALAR',
+    mech: { bricks: true },
     wallStyle: { color: '#33ff66', width: 5, blur: 9, dash: null },
     accent: '#1fd455', target: '#8fffb0', targetGlow: '#33ff66',
     saucer: '#1fd455', saucerHi: '#a8ffc4',
@@ -211,6 +215,8 @@ const THEMES = [
   { // 3 — günbatımı: degrade gök, şeritli güneş, dağ silüetleri
     name: 'GÜNBATIMI',
     hud: '#ffbf80',
+    mechLabel: 'ÇÖL RÜZGARI',
+    mech: { wind: true },
     wallStyle: { color: '#ffb36b', width: 5, blur: 5, dash: null },
     accent: '#e0533f', target: '#ffd166', targetGlow: '#ffb021',
     saucer: '#c44e9e', saucerHi: '#ff9fd0',
@@ -257,6 +263,8 @@ const THEMES = [
   { // 4 — derin okyanus: ışık hüzmeleri, kabarcıklar, denizanası bumperlar
     name: 'DERİN OKYANUS',
     hud: '#7fe8dc',
+    mechLabel: 'SU ALTI FİZİĞİ',
+    mech: { water: { drag: 0.55 }, gravityScale: 0.55, bumperMotion: 'floatY' },
     wallStyle: { color: '#39d0c4', width: 5, blur: 8, dash: null },
     accent: '#2f8fb8', target: '#aef4e4', targetGlow: '#39d0c4',
     saucer: '#2f7fbf', saucerHi: '#9fd0ff',
@@ -313,6 +321,8 @@ const THEMES = [
   { // 5 — volkan: çatlaklı zemin, yükselen korlar, lav küresi bumperlar
     name: 'VOLKAN',
     hud: '#ff9f6b',
+    mechLabel: 'PÜSKÜRME',
+    mech: { geyser: true, gravityScale: 1.12 },
     wallStyle: { color: '#ff7a3c', width: 5, blur: 10, dash: null },
     accent: '#c43b2b', target: '#ffd166', targetGlow: '#ffb021',
     saucer: '#8f2413', saucerHi: '#ff9f7a',
@@ -365,6 +375,8 @@ const THEMES = [
   { // 6 — galaksi: yıldız alanı, bulutsular, halkalı gezegen bumperlar
     name: 'GALAKSİ',
     hud: '#c7b8ff',
+    mechLabel: 'YERÇEKİMİ KUYULARI',
+    mech: { wells: { G: 5200000, maxA: 420 }, gravityScale: 0.55 },
     wallStyle: { color: '#b8a6ff', width: 4, blur: 7, dash: null },
     accent: '#8f5fd8', target: '#ffd9f2', targetGlow: '#ff8fd8',
     saucer: '#c78bff', saucerHi: '#e8d8ff',
@@ -413,6 +425,8 @@ const THEMES = [
   { // 7 — orman: yaprak silüetleri, ateşböcekleri, mantar bumperlar
     name: 'ORMAN',
     hud: '#b8e08a',
+    mechLabel: 'BÜYÜYEN MANTARLAR',
+    mech: { growth: true },
     wallStyle: { color: '#8fc46b', width: 5, blur: 4, dash: null },
     accent: '#c49a5f', target: '#eaffb0', targetGlow: '#b8e08a',
     saucer: '#4a7a3a', saucerHi: '#c8ffa8',
@@ -458,6 +472,8 @@ const THEMES = [
   { // 8 — şeker gecesi: puantiyeler, düşen şeker taneleri, naneli şeker bumperlar
     name: 'ŞEKER',
     hud: '#ff9fc0',
+    mechLabel: 'ŞURUP HAVUZLARI',
+    mech: { pools: true },
     wallStyle: { color: '#ff8fb3', width: 5, blur: 5, dash: null },
     accent: '#d84f8f', target: '#9fdcff', targetGlow: '#6bb8ff',
     saucer: '#8f4fd8', saucerHi: '#d8b8ff',
@@ -521,6 +537,107 @@ const spinner = { y: 500, angle: 0, vel: 0, score: 0 };
 let bankResetTimer = 0;
 let levelGravity = GRAVITY;
 let decoSeed = 1;
+
+/* ---------------- Temaya özgü mekanik durumu ---------------- */
+const mech = { bricks: [], brickRespawn: 0, pools: [], geyser: null, wind: null, streaks: [] };
+
+function resetMech(rng) {
+  mech.bricks.length = 0;
+  mech.pools.length = 0;
+  mech.streaks.length = 0;
+  mech.geyser = null;
+  mech.wind = null;
+  mech.brickRespawn = 0;
+  const m = theme.mech || {};
+
+  if (m.bricks) spawnBricks();
+
+  if (m.pools) {
+    const n = 2 + (rng() < 0.5 ? 1 : 0);
+    let tries = 0;
+    while (mech.pools.length < n && tries++ < 40) {
+      const p = { x: 140 + rng() * 230, y: 340 + rng() * 260, rx: 40 + rng() * 22, ry: 24 + rng() * 10 };
+      if (bumpers.some(b => Math.hypot(b.x - p.x, b.y - p.y) < b.r + p.rx)) continue;
+      if (Math.hypot(saucer.x - p.x, saucer.y - p.y) < p.rx + 45) continue;
+      if (mech.pools.some(q => Math.hypot(q.x - p.x, q.y - p.y) < q.rx + p.rx + 20)) continue;
+      mech.pools.push(p);
+    }
+  }
+
+  if (m.geyser) mech.geyser = { x: 251, y: 585, r: 66, phase: 'idle', timer: 4 + rng() * 3 };
+  if (m.wind) mech.wind = { v: 0, target: (rng() * 2 - 1) * 240, timer: 2 + rng() * 2 };
+}
+
+function spawnBricks() {
+  const cols = 5, rows = 3, bw = 44, bh = 16, gx = 6, gy = 12;
+  const x0 = 251 - (cols * bw + (cols - 1) * gx) / 2, y0 = 396;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      mech.bricks.push({ x: x0 + c * (bw + gx), y: y0 + r * (bh + gy), w: bw, h: bh, alive: true });
+}
+
+function updateMech(dt) {
+  const m = theme.mech || {};
+  const t = state.time;
+
+  if (m.bumperMotion === 'slideX') for (const b of bumpers) b.x = b.baseX + Math.sin(t * 0.5 + b.phase) * 36;
+  if (m.bumperMotion === 'floatY') for (const b of bumpers) b.y = b.baseY + Math.sin(t * 0.7 + b.phase) * 22;
+  if (m.growth) for (const b of bumpers) b.r = b.baseR * (1 + 0.26 * Math.sin(t * 0.6 + b.phase));
+
+  if (mech.wind) {
+    const w = mech.wind;
+    w.timer -= dt;
+    if (w.timer <= 0) { w.target = rand(-260, 260); w.timer = rand(2.5, 5); }
+    w.v += (w.target - w.v) * Math.min(1, dt * 1.2);
+    if (Math.abs(w.v) > 60 && mech.streaks.length < 10 && Math.random() < dt * 6) {
+      mech.streaks.push({ x: w.v > 0 ? -30 : W + 30, y: rand(90, 820), len: rand(30, 70) });
+    }
+    for (let i = mech.streaks.length - 1; i >= 0; i--) {
+      const s = mech.streaks[i];
+      s.x += w.v * 2.4 * dt;
+      if (s.x < -90 || s.x > W + 90) mech.streaks.splice(i, 1);
+    }
+  }
+
+  if (mech.geyser) {
+    const g = mech.geyser;
+    g.timer -= dt;
+    if (g.phase === 'idle' && g.timer <= 0) { g.phase = 'warn'; g.timer = 1.4; }
+    else if (g.phase === 'warn' && g.timer <= 0) {
+      g.phase = 'blast'; g.timer = 0.75;
+      SFX.launch(); buzz(40);
+      state.shake = Math.max(state.shake, 4);
+      spawnParticles(g.x, g.y, '#ff9f4a', 26, 460);
+    } else if (g.phase === 'blast' && g.timer <= 0) { g.phase = 'idle'; g.timer = rand(6, 9); }
+  }
+
+  if (mech.brickRespawn > 0) {
+    mech.brickRespawn -= dt;
+    if (mech.brickRespawn <= 0) mech.bricks.forEach(b => b.alive = true);
+  }
+}
+
+function collideBrick(b, br) {
+  const cx = clamp(b.x, br.x, br.x + br.w), cy = clamp(b.y, br.y, br.y + br.h);
+  let dx = b.x - cx, dy = b.y - cy;
+  const d2 = dx * dx + dy * dy;
+  if (d2 >= BALL_R * BALL_R) return;
+  let d = Math.sqrt(d2), nx, ny;
+  if (d < 0.001) { nx = 0; ny = -1; b.y = br.y - BALL_R; }
+  else { nx = dx / d; ny = dy / d; b.x = cx + nx * BALL_R; b.y = cy + ny * BALL_R; }
+  const vn = b.vx * nx + b.vy * ny;
+  if (vn < 0) { b.vx -= 1.55 * vn * nx; b.vy -= 1.55 * vn * ny; }
+  br.alive = false;
+  addScore(250, br.x + br.w / 2, br.y);
+  spawnParticles(br.x + br.w / 2, br.y + br.h / 2, theme.hud, 8, 220);
+  SFX.target(); buzz(10);
+  if (mech.bricks.every(x => !x.alive)) {
+    addScore(5000);
+    banner('TUĞLALAR TEMİZ!');
+    SFX.bank(); buzz(35);
+    mech.brickRespawn = 8;
+  }
+}
 
 // Rastgele bölüm inşası: tema, bumper dizilimi, hedef bankı yönü,
 // şerit sayısı, saucer konumu ve yerçekimi tohuma göre değişir.
@@ -602,18 +719,21 @@ function buildLevel(seed) {
   saucer.glow = 0;
 
   // Bumperlar: 2-4 adet, aday noktalardan seçilip hafifçe kaydırılır
-  const spots = [[170, 250], [332, 250], [251, 355], [251, 175], [150, 390], [352, 390], [251, 265]];
+  // (tuğlalı temada orta alan tuğlalara ayrıldığı için yalnızca üst noktalar)
+  let spots = [[170, 250], [332, 250], [251, 355], [251, 175], [150, 390], [352, 390], [251, 265]];
+  if (theme.mech && theme.mech.bricks) spots = spots.filter(s => s[1] <= 300);
+  if (theme.mech && theme.mech.bumperMotion === 'slideX') spots = spots.filter(s => s[0] >= 170 && s[0] <= 332);
   for (let i = spots.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [spots[i], spots[j]] = [spots[j], spots[i]];
   }
-  const bN = 2 + Math.floor(rng() * 3);
+  const bN = Math.min(spots.length, 2 + Math.floor(rng() * 3));
   for (const [sx, sy] of spots) {
     if (bumpers.length >= bN) break;
     const x = sx + (rng() * 24 - 12), y = sy + (rng() * 24 - 12);
     const r = 26 + rng() * 6;
     if (bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 28)) continue;
-    bumpers.push({ x, y, r, flash: 0, kick: 900 + rng() * 160 });
+    bumpers.push({ x, y, r, baseX: x, baseY: y, baseR: r, phase: rng() * TAU, flash: 0, kick: 900 + rng() * 160 });
   }
 
   // Bölüme özgü yerçekimi
@@ -623,6 +743,7 @@ function buildLevel(seed) {
   spinner.vel = 0;
   spinner.score = 0;
 
+  resetMech(rng);
   buildTableCache();
 }
 
@@ -785,6 +906,7 @@ function advanceLevel() {
   buildLevel((Math.random() * 2 ** 31) | 0);
   newServe();
   banner('BÖLÜM ' + state.level + ' • ' + theme.name);
+  setTimeout(() => { if (state.mode === 'playing') banner(theme.mechLabel); }, 1900);
   SFX.extraBall();
   updateHud();
 }
@@ -889,6 +1011,7 @@ function startGame() {
   newServe();
   showPanel(null);
   banner('BÖLÜM 1 • ' + theme.name);
+  setTimeout(() => { if (state.mode === 'playing') banner(theme.mechLabel); }, 1900);
 }
 
 function gameOver() {
@@ -1046,7 +1169,39 @@ function ballVsBall(a, b) {
 }
 
 function stepBall(b, dt) {
-  b.vy += levelGravity * dt;
+  const m = theme.mech || {};
+  b.vy += levelGravity * (m.gravityScale || 1) * dt;
+
+  // --- temaya özgü kuvvetler ---
+  if (m.water) {
+    const k = Math.exp(-m.water.drag * dt);
+    b.vx *= k; b.vy *= k;
+  }
+  if (mech.wind && b.x < LANE_X - BALL_R) b.vx += mech.wind.v * dt;
+  if (m.wells) {
+    for (const bp of bumpers) {
+      const dx = bp.x - b.x, dy = bp.y - b.y, d2 = dx * dx + dy * dy;
+      if (d2 > 48400) continue;
+      const d = Math.sqrt(d2) || 1;
+      if (d < bp.r + BALL_R + 3) continue;
+      const a = Math.min(m.wells.maxA, m.wells.G / d2);
+      b.vx += dx / d * a * dt;
+      b.vy += dy / d * a * dt;
+    }
+  }
+  for (const p of mech.pools) {
+    const ex = (b.x - p.x) / p.rx, ey = (b.y - p.y) / p.ry;
+    if (ex * ex + ey * ey < 1) {
+      const k = Math.exp(-2.2 * dt);
+      b.vx *= k; b.vy *= k;
+    }
+  }
+  if (mech.geyser && mech.geyser.phase === 'blast') {
+    const g = mech.geyser;
+    const dx = b.x - g.x, dy = b.y - g.y;
+    if (dx * dx + dy * dy < g.r * g.r) b.vy -= 5200 * dt;
+  }
+
   const sp = Math.hypot(b.vx, b.vy);
   if (sp > MAX_SPEED) { b.vx *= MAX_SPEED / sp; b.vy *= MAX_SPEED / sp; }
   const prevY = b.y, prevX = b.x;
@@ -1055,6 +1210,7 @@ function stepBall(b, dt) {
 
   for (const s of segs) collideSegment(b, s, dt);
   for (const bp of bumpers) collideBumper(b, bp);
+  for (const br of mech.bricks) if (br.alive) collideBrick(b, br);
   collideFlipper(b, flipL, dt);
   collideFlipper(b, flipR, dt);
 
@@ -1179,6 +1335,7 @@ function update(dt) {
   }
 
   updateAmbient(dt);
+  updateMech(dt);
 
   // spinner
   if (spinner.vel > 0.01) {
@@ -1316,9 +1473,9 @@ function buildTableCache() {
   c.fillStyle = withAlpha(theme.hud, 0.12);
   c.font = '900 42px "Segoe UI", Roboto, sans-serif';
   c.fillText(theme.name, 251, 662);
-  c.font = '800 20px "Segoe UI", Roboto, sans-serif';
-  c.fillStyle = withAlpha(theme.hud, 0.08);
-  c.fillText('PINBALL', 251, 692);
+  c.font = '800 16px "Segoe UI", Roboto, sans-serif';
+  c.fillStyle = withAlpha(theme.hud, 0.10);
+  c.fillText(theme.mechLabel || 'PINBALL', 251, 690);
   c.restore();
 
   // fırlatma kanalı okları
@@ -1351,6 +1508,7 @@ function draw() {
   }
 
   drawAmbient();
+  drawMech();
   drawLanes();
   drawBumpers();
   drawTargets();
@@ -1365,6 +1523,102 @@ function draw() {
   drawParticles();
   drawPopups();
   drawBallSave();
+}
+
+function drawMech() {
+  const m = theme.mech || {};
+  const t = state.time;
+
+  // kızak rayları (hareketli bumperlar)
+  if (m.bumperMotion === 'slideX') {
+    ctx.save();
+    ctx.setLineDash([5, 6]);
+    ctx.strokeStyle = withAlpha(theme.hud, 0.3);
+    ctx.lineWidth = 2;
+    for (const b of bumpers) ln(ctx, b.baseX - 44, b.y, b.baseX + 44, b.y);
+    ctx.restore();
+  }
+
+  // şurup havuzları
+  for (const p of mech.pools) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 107, 158, 0.22)';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, p.rx, p.ry, 0, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 209, 224, 0.55)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const rr = 0.55 + 0.12 * Math.sin(t * 2 + p.x);
+    ctx.strokeStyle = 'rgba(255, 209, 224, 0.25)';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, p.rx * rr, p.ry * rr, 0, 0, TAU); ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
+    ctx.beginPath(); ctx.ellipse(p.x - p.rx * 0.35, p.y - p.ry * 0.35, p.rx * 0.22, p.ry * 0.2, -0.5, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+
+  // piksel tuğlalar
+  for (const br of mech.bricks) {
+    if (!br.alive) continue;
+    ctx.fillStyle = 'rgba(51, 255, 102, 0.16)';
+    ctx.fillRect(br.x, br.y, br.w, br.h);
+    ctx.strokeStyle = '#33ff66';
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#33ff66';
+    ctx.shadowBlur = 6;
+    ctx.strokeRect(br.x + 1, br.y + 1, br.w - 2, br.h - 2);
+    ctx.shadowBlur = 0;
+  }
+
+  // gayzer
+  if (mech.geyser) {
+    const g = mech.geyser;
+    ctx.save();
+    ctx.setLineDash([6, 6]);
+    ctx.strokeStyle = 'rgba(255, 122, 60, 0.4)';
+    ctx.lineWidth = 2;
+    cStroke(ctx, g.x, g.y, 20);
+    ctx.setLineDash([]);
+    if (g.phase === 'warn') {
+      const pulse = 0.5 + 0.5 * Math.sin(t * 14);
+      ctx.strokeStyle = `rgba(255, 140, 70, ${0.35 + 0.45 * pulse})`;
+      ctx.lineWidth = 3.5;
+      ctx.shadowColor = '#ff7a3c'; ctx.shadowBlur = 14;
+      cStroke(ctx, g.x, g.y, g.r * (0.8 + 0.12 * pulse));
+      ctx.shadowBlur = 0;
+    } else if (g.phase === 'blast') {
+      const col = ctx.createLinearGradient(0, g.y, 0, g.y - 300);
+      col.addColorStop(0, 'rgba(255, 190, 100, 0.55)');
+      col.addColorStop(1, 'rgba(255, 120, 50, 0)');
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.moveTo(g.x - 34, g.y + 10);
+      ctx.lineTo(g.x - 14, g.y - 300);
+      ctx.lineTo(g.x + 14, g.y - 300);
+      ctx.lineTo(g.x + 34, g.y + 10);
+      ctx.closePath(); ctx.fill();
+      if (Math.random() < 0.6) spawnParticles(g.x + rand(-20, 20), g.y - rand(0, 60), '#ffb060', 2, 320);
+    }
+    ctx.restore();
+  }
+
+  // rüzgar çizgileri + göstergesi
+  if (mech.wind) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 210, 160, 0.25)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    for (const s of mech.streaks) ln(ctx, s.x, s.y, s.x + s.len * Math.sign(mech.wind.v || 1), s.y);
+    const wv = mech.wind.v / 260;
+    const ax = 251, ay = 168, len = wv * 44;
+    if (Math.abs(len) > 4) {
+      ctx.strokeStyle = withAlpha(theme.hud, 0.75);
+      ctx.lineWidth = 3;
+      ln(ctx, ax - len, ay, ax + len, ay);
+      const dir = Math.sign(len);
+      ln(ctx, ax + len, ay, ax + len - dir * 8, ay - 5);
+      ln(ctx, ax + len, ay, ax + len - dir * 8, ay + 5);
+    }
+    ctx.restore();
+  }
 }
 
 function drawLanes() {
