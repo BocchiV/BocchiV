@@ -10,7 +10,17 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 
 ## ✨ Özellikler
 
-- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Her bölüm farklıdır: 6 renk temasından biri (Neon, Magma, Zümrüt, Buzul, Galaksi, Altın), 2-4 bumper farklı dizilimde, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi
+- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi
+- **8 özgün tema** — her bölüm bambaşka bir dünyada geçer, her temanın kendi sanat yönetimi vardır:
+  - **Teknik Çizim**: milimetrik plan kağıdı, kesikli çizgiler, artı işaretli hedef bumperlar
+  - **Retro CRT**: fosfor yeşili tüplü ekran, tarama çizgileri, ekranı süpüren ışık bandı
+  - **Günbatımı**: degrade gökyüzü, şeritli dev güneş, dağ silüetleri, mini güneş bumperlar
+  - **Derin Okyanus**: ışık hüzmeleri, yükselen kabarcıklar, dokunaçları kıpırdayan denizanası bumperlar
+  - **Volkan**: magma çatlakları, yükselen korlar, nabız gibi atan lav küresi bumperlar
+  - **Galaksi**: yıldız alanı, bulutsular, halkalı gezegen bumperlar
+  - **Orman**: yaprak silüetleri, gezinen ateşböcekleri, benekli mantar bumperlar
+  - **Şeker**: puantiyeli gece pasteli, düşen şeker taneleri, dönen naneli şeker bumperlar
+  - HUD renkleri, duvar stili, top izi ve parçacık efektleri de temayla birlikte değişir
 - **Gerçekçi fizik**: 240 Hz alt adımlı fizik motoru, dönen flipper çarpışmaları, top-top çarpışması (multiball)
 - **Masa öğeleri**: 3 pop bumper, 2 slingshot, 3'lü drop target bankı, rollover şeritleri, spinner, saucer (kilit çukuru), tek yön kapılı fırlatma kanalı
 - **Oyun mekanikleri**:

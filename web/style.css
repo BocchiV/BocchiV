@@ -36,8 +36,8 @@ html, body {
   font-size: clamp(26px, 7vw, 40px);
   font-weight: 800;
   letter-spacing: 2px;
-  color: #9fdcff;
-  text-shadow: 0 0 12px rgba(64, 180, 255, .9), 0 0 34px rgba(64, 156, 255, .5);
+  color: var(--hud, #9fdcff);
+  text-shadow: 0 0 12px var(--hud-glow, rgba(64, 180, 255, .9)), 0 0 34px var(--hud-soft, rgba(64, 156, 255, .5));
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
@@ -63,15 +63,15 @@ html, body {
 #goal-bar {
   height: 100%; width: 0%;
   border-radius: 3px;
-  background: linear-gradient(90deg, #21c7ff, #ff2fb0);
-  box-shadow: 0 0 8px rgba(33, 199, 255, .8);
+  background: var(--hud, #21c7ff);
+  box-shadow: 0 0 8px var(--hud-glow, rgba(33, 199, 255, .8));
   transition: width .25s ease;
 }
 #goal-label {
   font-size: 9px; letter-spacing: 3px; color: #4d6fa8; margin-top: 4px;
 }
 
-#level { color: #7ef9ff; text-shadow: 0 0 8px rgba(126, 249, 255, .8); }
+#level { color: var(--hud, #7ef9ff); text-shadow: 0 0 8px var(--hud-glow, rgba(126, 249, 255, .8)); }
 
 #hud-right { display: flex; gap: 8px; align-items: center; pointer-events: auto; }
 
