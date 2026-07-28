@@ -29,7 +29,8 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
   - Top koruması (her serviste 12 sn)
   - Ekstra top (200K / 500K / 1M puanda)
   - Şarjlı plunger ile fırlatma
-- **Görsel & ses**: Neon parlama efektleri, parçacıklar, top izi, ekran sarsıntısı, WebAudio ile sentezlenen ses efektleri, titreşim (haptik) desteği
+- **Görsel & ses**: Malzeme kalitesi — pahlı (bevel) duvarlar, perçin detayları, film greni + vinyet, krom top (temas gölgesi, spekülar parlama, zemin yansıması), kauçuk uçlu flipperlar, çukur görünümlü saucer; parçacıklar, ekran sarsıntısı, WebAudio ile sentezlenen ses efektleri, titreşim (haptik) desteği
+- **Performans**: Bumper ve ışıma sprite önbelleği (kare başına gradyan/gölge üretimi yok), tek geçişli top izi, statik masa katmanı; kare süresi uzarsa **otomatik kalite ölçekleme** çözünürlüğü kademeli düşürür
 - **Mobil öncelikli**: Çoklu dokunuş (iki flipper aynı anda), portre tam ekran, her çözünürlüğe uyum
 - **Kayıt**: En yüksek skor cihazda saklanır
 

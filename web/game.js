@@ -26,8 +26,9 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 let viewScale = 1;
 
+let dprCap = 2;   // otomatik kalite ölçekleyici düşürebilir
 function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2, dprCap);
   const fit = Math.min(window.innerWidth / W, window.innerHeight / H);
   canvas.style.width = (W * fit) + 'px';
   canvas.style.height = (H * fit) + 'px';
@@ -116,6 +117,30 @@ function withAlpha(hex, a) {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
 }
 
+function shade(hex, f) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  if (f < 0) { r *= 1 + f; g *= 1 + f; b *= 1 + f; }
+  else { r += (255 - r) * f; g += (255 - g) * f; b += (255 - b) * f; }
+  return `rgb(${r | 0}, ${g | 0}, ${b | 0})`;
+}
+
+// film greni dokusu (bir kez üretilir, ucuz desen olarak serilir)
+let noiseCv = null;
+function ensureNoise() {
+  if (noiseCv) return;
+  noiseCv = document.createElement('canvas');
+  noiseCv.width = noiseCv.height = 128;
+  const nc = noiseCv.getContext('2d');
+  const img = nc.createImageData(128, 128);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = (Math.random() * 255) | 0;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = 255;
+  }
+  nc.putImageData(img, 0, 0);
+}
+
 /* ---------------- Çizim yardımcıları ---------------- */
 function ln(c, x1, y1, x2, y2) { c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); }
 function cFill(c, x, y, r) { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill(); }
@@ -158,19 +183,17 @@ const THEMES = [
         ln(c, x - 9, y, x + 9, y); ln(c, x, y - 9, x, y + 9);
       }
     },
-    drawBumper(c, b, f) {
-      c.save();
-      c.strokeStyle = f > 0 ? '#ffffff' : '#d8ecff';
+    bumperGlow: null,
+    paintBumper(c, r) {
+      c.strokeStyle = '#d8ecff';
       c.lineWidth = 2.5;
       c.setLineDash([6, 4]);
-      cStroke(c, b.x, b.y, b.r);
+      cStroke(c, 0, 0, r);
       c.setLineDash([]);
-      cStroke(c, b.x, b.y, b.r * 0.55);
+      cStroke(c, 0, 0, r * 0.55);
       c.lineWidth = 1.5;
-      ln(c, b.x - b.r * 0.82, b.y, b.x + b.r * 0.82, b.y);
-      ln(c, b.x, b.y - b.r * 0.82, b.x, b.y + b.r * 0.82);
-      if (f > 0) { c.globalAlpha = f * 0.7; c.fillStyle = '#fff'; cFill(c, b.x, b.y, b.r); }
-      c.restore();
+      ln(c, -r * 0.82, 0, r * 0.82, 0);
+      ln(c, 0, -r * 0.82, 0, r * 0.82);
     },
   },
 
@@ -194,20 +217,19 @@ const THEMES = [
       c.fillStyle = 'rgba(0, 0, 0, 0.28)';
       for (let y = 0; y < H; y += 4) c.fillRect(0, y, W, 2);
     },
-    drawBumper(c, b, f) {
-      c.fillStyle = f > 0 ? '#eaffea' : '#0a2f14';
-      cFill(c, b.x, b.y, b.r);
+    bumperGlow: '#33ff66',
+    paintBumper(c, r) {
+      c.fillStyle = '#0a2f14';
+      cFill(c, 0, 0, r);
       c.strokeStyle = '#33ff66'; c.lineWidth = 3;
-      c.shadowColor = '#33ff66'; c.shadowBlur = 10 + f * 22;
-      cStroke(c, b.x, b.y, b.r);
-      c.shadowBlur = 0;
-      cStroke(c, b.x, b.y, b.r * 0.58);
+      cStroke(c, 0, 0, r);
+      cStroke(c, 0, 0, r * 0.58);
       c.fillStyle = '#33ff66';
-      cFill(c, b.x, b.y, b.r * 0.22);
+      cFill(c, 0, 0, r * 0.22);
       c.strokeStyle = 'rgba(0, 0, 0, 0.4)'; c.lineWidth = 2;
-      for (let y = b.y - b.r + 4; y < b.y + b.r; y += 6) {
-        const hw = Math.sqrt(Math.max(0, b.r * b.r - (y - b.y) * (y - b.y))) - 2;
-        if (hw > 2) ln(c, b.x - hw, y, b.x + hw, y);
+      for (let y = -r + 4; y < r; y += 6) {
+        const hw = Math.sqrt(Math.max(0, r * r - y * y)) - 2;
+        if (hw > 2) ln(c, -hw, y, hw, y);
       }
     },
   },
@@ -243,19 +265,18 @@ const THEMES = [
       c.lineTo(360, 700); c.lineTo(452, 636); c.lineTo(540, 712);
       c.lineTo(540, H); c.lineTo(0, H); c.closePath(); c.fill();
     },
-    drawBumper(c, b, f) {
-      const g = c.createRadialGradient(b.x, b.y - b.r * 0.3, 2, b.x, b.y, b.r);
-      g.addColorStop(0, f > 0 ? '#ffffff' : '#ffe9a8');
+    bumperGlow: '#ff8f4a',
+    paintBumper(c, r) {
+      const g = c.createRadialGradient(0, -r * 0.3, 2, 0, 0, r);
+      g.addColorStop(0, '#ffe9a8');
       g.addColorStop(0.6, '#ffb04a'); g.addColorStop(1, '#ff5f3f');
       c.fillStyle = g;
-      c.shadowColor = '#ff8f4a'; c.shadowBlur = 10 + f * 20;
-      cFill(c, b.x, b.y, b.r);
-      c.shadowBlur = 0;
+      cFill(c, 0, 0, r);
       c.strokeStyle = 'rgba(45, 12, 45, 0.75)'; c.lineWidth = 2.5;
       for (let i = 1; i <= 3; i++) {
-        const dy = b.r * 0.22 * i + 1;
-        const hw = Math.sqrt(Math.max(0, b.r * b.r - dy * dy)) - 1;
-        if (hw > 2) ln(c, b.x - hw, b.y + dy, b.x + hw, b.y + dy);
+        const dy = r * 0.22 * i + 1;
+        const hw = Math.sqrt(Math.max(0, r * r - dy * dy)) - 1;
+        if (hw > 2) ln(c, -hw, dy, hw, dy);
       }
     },
   },
@@ -294,7 +315,8 @@ const THEMES = [
         c.fill();
       }
     },
-    drawBumper(c, b, f, t) {
+    bumperGlow: '#7fe8dc',
+    bumperUnder(c, b, t) {
       c.strokeStyle = 'rgba(150, 230, 220, 0.6)'; c.lineWidth = 2.5; c.lineCap = 'round';
       for (let i = -1; i <= 1; i++) {
         const px = b.x + i * b.r * 0.45;
@@ -304,17 +326,19 @@ const THEMES = [
                            px + Math.sin(t * 2.2 + i + 1.2) * 9, b.y + b.r * 1.55);
         c.stroke();
       }
-      const g = c.createRadialGradient(b.x, b.y - 3, 2, b.x, b.y, b.r);
-      g.addColorStop(0, f > 0 ? '#ffffff' : '#d8fff6');
+    },
+    paintBumper(c, r) {
+      const g = c.createRadialGradient(0, -3, 2, 0, 0, r);
+      g.addColorStop(0, '#d8fff6');
       g.addColorStop(0.7, '#4fd0c4'); g.addColorStop(1, 'rgba(36, 120, 140, 0.92)');
       c.fillStyle = g;
-      c.shadowColor = '#7fe8dc'; c.shadowBlur = 12 + f * 18;
       c.beginPath();
-      c.arc(b.x, b.y, b.r, Math.PI, 0);
-      c.quadraticCurveTo(b.x + b.r * 0.55, b.y + b.r * 0.55, b.x, b.y + b.r * 0.42);
-      c.quadraticCurveTo(b.x - b.r * 0.55, b.y + b.r * 0.55, b.x - b.r, b.y);
+      c.arc(0, 0, r, Math.PI, 0);
+      c.quadraticCurveTo(r * 0.55, r * 0.55, 0, r * 0.42);
+      c.quadraticCurveTo(-r * 0.55, r * 0.55, -r, 0);
       c.fill();
-      c.shadowBlur = 0;
+      c.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      c.beginPath(); c.ellipse(-r * 0.3, -r * 0.45, r * 0.28, r * 0.16, -0.5, 0, TAU); c.fill();
     },
   },
 
@@ -356,19 +380,18 @@ const THEMES = [
         c.fillStyle = r; cFill(c, x, y, 40);
       }
     },
-    drawBumper(c, b, f, t) {
-      const pulse = 0.5 + 0.5 * Math.sin(t * 3 + b.x * 0.05);
-      const g = c.createRadialGradient(b.x, b.y, 2, b.x, b.y, b.r);
-      g.addColorStop(0, f > 0 ? '#ffffff' : '#ffe9a8');
+    bumperGlow: '#ff7a3c',
+    glowPulse: true,
+    paintBumper(c, r) {
+      const g = c.createRadialGradient(0, 0, 2, 0, 0, r);
+      g.addColorStop(0, '#ffe9a8');
       g.addColorStop(0.45, '#ff7a3c'); g.addColorStop(1, '#3a120a');
       c.fillStyle = g;
-      c.shadowColor = '#ff7a3c'; c.shadowBlur = 8 + pulse * 10 + f * 20;
-      cFill(c, b.x, b.y, b.r);
-      c.shadowBlur = 0;
+      cFill(c, 0, 0, r);
       c.strokeStyle = 'rgba(28, 8, 4, 0.8)'; c.lineWidth = 2;
-      c.beginPath(); c.arc(b.x, b.y, b.r * 0.72, 0.4, 1.5); c.stroke();
-      c.beginPath(); c.arc(b.x, b.y, b.r * 0.55, 2.6, 3.8); c.stroke();
-      c.beginPath(); c.arc(b.x, b.y, b.r * 0.85, 4.2, 5.1); c.stroke();
+      c.beginPath(); c.arc(0, 0, r * 0.72, 0.4, 1.5); c.stroke();
+      c.beginPath(); c.arc(0, 0, r * 0.55, 2.6, 3.8); c.stroke();
+      c.beginPath(); c.arc(0, 0, r * 0.85, 4.2, 5.1); c.stroke();
     },
   },
 
@@ -406,19 +429,19 @@ const THEMES = [
         ln(c, x - 6, y, x + 6, y); ln(c, x, y - 6, x, y + 6);
       }
     },
-    drawBumper(c, b, f) {
-      const hue = ((b.x * 3 + b.y * 7) | 0) % 360;
-      const g = c.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.35, 2, b.x, b.y, b.r);
-      g.addColorStop(0, f > 0 ? '#ffffff' : `hsl(${hue}, 70%, 76%)`);
+    bumperGlow: '#b8a6ff',
+    paintBumper(c, r, b) {
+      const hue = ((b.baseX * 3 + b.baseY * 7) | 0) % 360;
+      const g = c.createRadialGradient(-r * 0.35, -r * 0.35, 2, 0, 0, r);
+      g.addColorStop(0, `hsl(${hue}, 70%, 76%)`);
       g.addColorStop(1, `hsl(${hue}, 62%, 28%)`);
       c.fillStyle = g;
-      cFill(c, b.x, b.y, b.r);
+      cFill(c, 0, 0, r);
       c.save();
-      c.translate(b.x, b.y); c.rotate(-0.5);
+      c.rotate(-0.5);
       c.strokeStyle = `hsla(${(hue + 45) % 360}, 80%, 80%, 0.9)`; c.lineWidth = 3;
-      c.beginPath(); c.ellipse(0, 0, b.r * 1.45, b.r * 0.42, 0, 0, TAU); c.stroke();
+      c.beginPath(); c.ellipse(0, 0, r * 1.45, r * 0.42, 0, 0, TAU); c.stroke();
       c.restore();
-      if (f > 0) { c.globalAlpha = f * 0.6; c.fillStyle = '#fff'; cFill(c, b.x, b.y, b.r); c.globalAlpha = 1; }
     },
   },
 
@@ -448,24 +471,27 @@ const THEMES = [
       m.addColorStop(0, 'rgba(230, 255, 200, 0.14)'); m.addColorStop(1, 'transparent');
       c.fillStyle = m; cFill(c, 420, 120, 240);
     },
-    drawBumper(c, b, f) {
+    bumperGlow: '#b8e08a',
+    paintBumper(c, r) {
       // sap
       c.fillStyle = '#efe0c2';
-      c.fillRect(b.x - b.r * 0.28, b.y, b.r * 0.56, b.r * 0.8);
+      c.fillRect(-r * 0.28, 0, r * 0.56, r * 0.8);
+      c.fillStyle = 'rgba(120, 90, 50, 0.25)';
+      c.fillRect(r * 0.06, 0, r * 0.2, r * 0.8);
       // şapka
-      const g = c.createRadialGradient(b.x, b.y - b.r * 0.35, 2, b.x, b.y, b.r);
-      g.addColorStop(0, f > 0 ? '#ffffff' : '#ff6b5e');
+      const g = c.createRadialGradient(0, -r * 0.35, 2, 0, 0, r);
+      g.addColorStop(0, '#ff6b5e');
       g.addColorStop(1, '#a81f1c');
       c.fillStyle = g;
       c.beginPath();
-      c.arc(b.x, b.y, b.r, Math.PI, 0);
-      c.quadraticCurveTo(b.x, b.y + b.r * 0.32, b.x - b.r, b.y);
+      c.arc(0, 0, r, Math.PI, 0);
+      c.quadraticCurveTo(0, r * 0.32, -r, 0);
       c.fill();
       // benekler
       c.fillStyle = 'rgba(255, 246, 232, 0.95)';
-      cFill(c, b.x - b.r * 0.42, b.y - b.r * 0.32, b.r * 0.14);
-      cFill(c, b.x + b.r * 0.3, b.y - b.r * 0.5, b.r * 0.12);
-      cFill(c, b.x + b.r * 0.05, b.y - b.r * 0.12, b.r * 0.10);
+      cFill(c, -r * 0.42, -r * 0.32, r * 0.14);
+      cFill(c, r * 0.3, -r * 0.5, r * 0.12);
+      cFill(c, r * 0.05, -r * 0.12, r * 0.10);
     },
   },
 
@@ -499,20 +525,21 @@ const THEMES = [
         cFill(c, rng() * W, rng() * H, 4 + rng() * 8);
       }
     },
-    drawBumper(c, b, f, t) {
-      const segN = 10, rot = t * 0.7;
+    bumperGlow: '#ff9fc0',
+    bumperSpin: 0.7,
+    paintBumper(c, r) {
+      const segN = 10;
       for (let i = 0; i < segN; i++) {
         c.fillStyle = i % 2 ? '#fff6fa' : '#ff4f6e';
         c.beginPath();
-        c.moveTo(b.x, b.y);
-        c.arc(b.x, b.y, b.r, rot + i * TAU / segN, rot + (i + 1) * TAU / segN);
+        c.moveTo(0, 0);
+        c.arc(0, 0, r, i * TAU / segN, (i + 1) * TAU / segN);
         c.closePath(); c.fill();
       }
       c.strokeStyle = 'rgba(255, 255, 255, 0.9)'; c.lineWidth = 2.5;
-      cStroke(c, b.x, b.y, b.r);
+      cStroke(c, 0, 0, r);
       c.fillStyle = '#fff';
-      cFill(c, b.x, b.y, b.r * 0.24);
-      if (f > 0) { c.globalAlpha = f * 0.5; c.fillStyle = '#fff'; cFill(c, b.x, b.y, b.r + 3); c.globalAlpha = 1; }
+      cFill(c, 0, 0, r * 0.24);
     },
   },
 ];
@@ -1416,27 +1443,64 @@ function buildTableCache() {
   // temaya özgü arkaplan
   theme.bg(c, rng);
 
-  // duvarlar (tema duvar stiliyle)
+  // film greni dokusu — düz gradyan hissini kırar
+  ensureNoise();
+  c.save();
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.globalAlpha = theme.grain || 0.05;
+  c.globalCompositeOperation = 'overlay';
+  c.fillStyle = c.createPattern(noiseCv, 'repeat');
+  c.fillRect(0, 0, tableCache.width, tableCache.height);
+  c.restore();
+
+  // vinyet — kenarlara doğru kararma, derinlik hissi
+  const vg = c.createRadialGradient(270, 460, 230, 270, 460, 640);
+  vg.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  vg.addColorStop(1, 'rgba(0, 0, 0, 0.42)');
+  c.fillStyle = vg;
+  c.fillRect(0, 0, W, H);
+
+  // duvarlar: pahlı (bevel) malzeme görünümü — gölge, gövde, üst yüz, parlak kenar
   const ws = theme.wallStyle;
-  c.lineCap = ws.dash ? 'butt' : 'round';
-  c.setLineDash(ws.dash || []);
-  function strokeSeg(s, width) {
-    c.strokeStyle = ws.color;
-    c.shadowColor = ws.color;
-    c.shadowBlur = ws.blur;
+  function strokeLine(x1, y1, x2, y2, color, width, blur = 0) {
+    c.strokeStyle = color;
     c.lineWidth = width;
-    c.beginPath();
-    c.moveTo(s.x1, s.y1);
-    c.lineTo(s.x2, s.y2);
-    c.stroke();
+    if (blur) { c.shadowColor = color; c.shadowBlur = blur; }
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    if (blur) c.shadowBlur = 0;
   }
+  function strokeSeg(s, width) {
+    if (ws.dash) {
+      c.lineCap = 'butt';
+      c.setLineDash(ws.dash);
+      strokeLine(s.x1, s.y1, s.x2, s.y2, ws.color, width);
+      c.setLineDash([]);
+      c.lineCap = 'round';
+      return;
+    }
+    strokeLine(s.x1 + 1.5, s.y1 + 2.5, s.x2 + 1.5, s.y2 + 2.5, 'rgba(0, 0, 0, 0.45)', width + 2.5);
+    strokeLine(s.x1, s.y1, s.x2, s.y2, shade(ws.color, -0.4), width + 1);
+    strokeLine(s.x1, s.y1, s.x2, s.y2, ws.color, width * 0.66, ws.blur);
+    strokeLine(s.x1 - 0.8, s.y1 - 1.4, s.x2 - 0.8, s.y2 - 1.4, 'rgba(255, 255, 255, 0.30)', Math.max(1.2, width * 0.22));
+  }
+  c.lineCap = 'round';
   for (const s of segs) {
     if (s.tag === 'gate' || s.tag === 'target' || s.tag === 'slingL' || s.tag === 'slingR') continue;
     strokeSeg(s, s.tag === 'post' ? Math.max(2, ws.width - 1.5) : ws.width);
   }
-  c.setLineDash([]);
-  c.shadowBlur = 0;
-  c.lineCap = 'round';
+
+  // dış duvar perçinleri — kabine/masa hissi
+  if (!ws.dash) {
+    for (const [px, py] of [
+      [15, 320], [15, 430], [15, 540], [15, 650],
+      [525, 320], [525, 430], [525, 540], [525, 650], [525, 760], [525, 870],
+    ]) {
+      c.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      cFill(c, px, py, 3.4);
+      c.fillStyle = shade(ws.color, 0.25);
+      cFill(c, px - 0.7, py - 0.7, 1.5);
+    }
+  }
 
   // slingshot gövdeleri
   for (const pts of [
@@ -1456,16 +1520,23 @@ function buildTableCache() {
     c.shadowBlur = 0;
   }
 
-  // saucer yuvası
-  c.beginPath();
-  c.arc(saucer.x, saucer.y, saucer.r + 4, 0, TAU);
-  c.strokeStyle = theme.saucer;
-  c.shadowColor = theme.saucer; c.shadowBlur = 12;
+  // saucer yuvası — gerçek bir çukur gibi: içe gölgeli, kenarı ışıklı
+  const sr = saucer.r + 4;
+  const hole = c.createRadialGradient(saucer.x, saucer.y - 2, 2, saucer.x, saucer.y, sr);
+  hole.addColorStop(0, 'rgba(0, 0, 0, 0.75)');
+  hole.addColorStop(0.65, 'rgba(0, 0, 0, 0.45)');
+  hole.addColorStop(1, withAlpha(theme.saucer, 0.30));
+  c.fillStyle = hole;
+  cFill(c, saucer.x, saucer.y, sr);
+  c.strokeStyle = shade(theme.saucer, -0.25);
   c.lineWidth = 3;
-  c.stroke();
-  c.shadowBlur = 0;
-  c.fillStyle = withAlpha(theme.saucer, 0.15);
-  c.fill();
+  cStroke(c, saucer.x, saucer.y, sr);
+  // alt kenara ışık, üst kenara gölge (çukur yanılsaması)
+  c.strokeStyle = withAlpha(theme.saucerHi, 0.65);
+  c.lineWidth = 2;
+  c.beginPath(); c.arc(saucer.x, saucer.y, sr, 0.25 * Math.PI, 0.75 * Math.PI); c.stroke();
+  c.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+  c.beginPath(); c.arc(saucer.x, saucer.y, sr - 1.5, 1.2 * Math.PI, 1.8 * Math.PI); c.stroke();
 
   // tema adı filigranı
   c.save();
@@ -1491,6 +1562,8 @@ function buildTableCache() {
     c.fill();
   }
   c.restore();
+
+  rebuildBumperSprites();
 }
 
 function draw() {
@@ -1562,10 +1635,9 @@ function drawMech() {
     ctx.fillRect(br.x, br.y, br.w, br.h);
     ctx.strokeStyle = '#33ff66';
     ctx.lineWidth = 2;
-    ctx.shadowColor = '#33ff66';
-    ctx.shadowBlur = 6;
     ctx.strokeRect(br.x + 1, br.y + 1, br.w - 2, br.h - 2);
-    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(200, 255, 215, 0.30)';
+    ctx.fillRect(br.x + 3, br.y + 3, br.w - 6, 2);
   }
 
   // gayzer
@@ -1639,12 +1711,67 @@ function drawLanes() {
   }
 }
 
+/* Bumper sprite önbelleği: gövde ve ışıma bir kez çizilir,
+   her karede yalnızca drawImage yapılır (shadowBlur yok). */
+function rebuildBumperSprites() {
+  for (const b of bumpers) {
+    const half = b.baseR * 1.6 + 6;
+    b.sprHalf = half;
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = Math.max(2, Math.ceil(half * 2 * viewScale));
+    const c = cv.getContext('2d');
+    c.scale(viewScale, viewScale);
+    c.translate(half, half);
+    c.lineCap = 'round';
+    theme.paintBumper(c, b.baseR, b);
+    b.sprite = cv;
+
+    if (theme.bumperGlow) {
+      const gr = b.baseR * 2.1;
+      const gcv = document.createElement('canvas');
+      gcv.width = gcv.height = Math.max(2, Math.ceil(gr * 2 * viewScale));
+      const gc = gcv.getContext('2d');
+      gc.scale(viewScale, viewScale);
+      const g = gc.createRadialGradient(gr, gr, b.baseR * 0.4, gr, gr, gr);
+      g.addColorStop(0, withAlpha(theme.bumperGlow, 0.5));
+      g.addColorStop(0.5, withAlpha(theme.bumperGlow, 0.18));
+      g.addColorStop(1, withAlpha(theme.bumperGlow, 0));
+      gc.fillStyle = g;
+      gc.fillRect(0, 0, gr * 2, gr * 2);
+      b.glowSprite = gcv;
+      b.glowHalf = gr;
+    } else {
+      b.glowSprite = null;
+    }
+  }
+}
+
 function drawBumpers() {
+  const t = state.time;
   for (const b of bumpers) {
     const f = b.flash > 0 ? b.flash / 0.3 : 0;
+    if (b.glowSprite) {
+      let ga = 0.85;
+      if (theme.glowPulse) ga = 0.55 + 0.4 * Math.sin(t * 3 + b.phase);
+      ctx.globalAlpha = Math.min(1, ga + f * 0.5);
+      const gs = b.glowHalf * 2 * (1 + f * 0.3);
+      ctx.drawImage(b.glowSprite, b.x - gs / 2, b.y - gs / 2, gs, gs);
+      ctx.globalAlpha = 1;
+    }
+    if (theme.bumperUnder) { ctx.save(); theme.bumperUnder(ctx, b, t); ctx.restore(); }
     ctx.save();
-    theme.drawBumper(ctx, b, f, state.time);
+    ctx.translate(b.x, b.y);
+    if (theme.bumperSpin) ctx.rotate(t * theme.bumperSpin + b.phase);
+    const sc = b.r / b.baseR;
+    if (sc !== 1) ctx.scale(sc, sc);
+    ctx.drawImage(b.sprite, -b.sprHalf, -b.sprHalf, b.sprHalf * 2, b.sprHalf * 2);
     ctx.restore();
+    if (f > 0) {
+      ctx.globalAlpha = f * 0.6;
+      ctx.fillStyle = '#fff';
+      cFill(ctx, b.x, b.y, b.r);
+      ctx.globalAlpha = 1;
+    }
   }
 }
 
@@ -1704,11 +1831,11 @@ function drawAmbient() {
       ctx.fillStyle = a.color;
       cFill(ctx, p.x, p.y, p.r * 0.8);
     } else if (p.type === 'fireflies') {
-      ctx.globalAlpha = (0.2 + 0.6 * (0.5 + 0.5 * Math.sin(p.life * 4 + p.phase))) * fade;
+      ctx.globalAlpha = (0.1 + 0.3 * (0.5 + 0.5 * Math.sin(p.life * 4 + p.phase))) * fade;
       ctx.fillStyle = a.color;
-      ctx.shadowColor = a.color; ctx.shadowBlur = 8;
-      cFill(ctx, p.x, p.y, 2.2);
-      ctx.shadowBlur = 0;
+      cFill(ctx, p.x, p.y, 5);
+      ctx.globalAlpha = (0.3 + 0.6 * (0.5 + 0.5 * Math.sin(p.life * 4 + p.phase))) * fade;
+      cFill(ctx, p.x, p.y, 2);
     } else if (p.type === 'stars') {
       ctx.globalAlpha = (0.3 + 0.6 * (0.5 + 0.5 * Math.sin(p.life * 3 + p.phase))) * fade;
       ctx.fillStyle = a.color;
@@ -1730,11 +1857,13 @@ function drawTargets() {
   for (const t of targets) {
     const cy = (t.y1 + t.y2) / 2;
     if (t.up) {
+      const h = t.y2 - t.y1;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.fillRect(t.x - 5, t.y1 + 2, 10, h);
       ctx.fillStyle = theme.target;
-      ctx.shadowColor = theme.targetGlow;
-      ctx.shadowBlur = 12;
-      ctx.fillRect(t.x - 4, t.y1, 8, t.y2 - t.y1);
-      ctx.shadowBlur = 0;
+      ctx.fillRect(t.x - 4, t.y1, 8, h);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.fillRect(t.x - 1.4, t.y1 + 3, 2.8, h - 6);
     } else {
       ctx.fillStyle = withAlpha(theme.target, 0.15);
       ctx.fillRect(t.x - 3, t.y1, 6, t.y2 - t.y1);
@@ -1748,21 +1877,25 @@ function drawTargets() {
 
 function drawSaucer() {
   const pulse = 0.5 + 0.5 * Math.sin(state.time * 3);
-  ctx.beginPath();
-  ctx.arc(saucer.x, saucer.y, saucer.r - 5, 0, TAU);
-  ctx.fillStyle = withAlpha(theme.saucer, 0.25 + 0.3 * pulse + saucer.glow * 0.4);
-  ctx.shadowColor = theme.saucerHi;
-  ctx.shadowBlur = 10 + saucer.glow * 30;
-  ctx.fill();
-  ctx.shadowBlur = 0;
+  // çukur içinde nabız gibi atan halka (blur yok)
+  ctx.strokeStyle = withAlpha(theme.saucerHi, 0.25 + 0.4 * pulse + saucer.glow * 0.3);
+  ctx.lineWidth = 2.5;
+  cStroke(ctx, saucer.x, saucer.y, saucer.r * (0.45 + 0.25 * pulse));
+  if (saucer.glow > 0) {
+    ctx.globalAlpha = saucer.glow * 0.5;
+    ctx.fillStyle = theme.saucerHi;
+    cFill(ctx, saucer.x, saucer.y, saucer.r - 4);
+    ctx.globalAlpha = 1;
+  }
   // kilit göstergeleri
   for (let i = 0; i < 3; i++) {
-    ctx.beginPath();
-    ctx.arc(saucer.x - 16 + i * 16, saucer.y + saucer.r + 14, 4, 0, TAU);
-    ctx.fillStyle = i < saucer.locks ? theme.saucerHi : withAlpha(theme.saucerHi, 0.2);
-    if (i < saucer.locks) { ctx.shadowColor = theme.saucerHi; ctx.shadowBlur = 8; }
-    ctx.fill();
-    ctx.shadowBlur = 0;
+    const lit = i < saucer.locks;
+    ctx.fillStyle = lit ? theme.saucerHi : withAlpha(theme.saucerHi, 0.2);
+    cFill(ctx, saucer.x - 16 + i * 16, saucer.y + saucer.r + 14, lit ? 4.5 : 4);
+    if (lit) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      cFill(ctx, saucer.x - 16 + i * 16 - 1, saucer.y + saucer.r + 13, 1.4);
+    }
   }
 }
 
@@ -1812,29 +1945,49 @@ function drawSlingFlash() {
 }
 
 function drawFlippers() {
+  ctx.lineCap = 'round';
   for (const f of [flipL, flipR]) {
     const tip = flipperTip(f, f.angle);
+    // yere düşen gölge
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.lineWidth = f.r * 2 + 2;
+    ctx.beginPath();
+    ctx.moveTo(f.px + 2, f.py + 4);
+    ctx.lineTo(tip.x + 2, tip.y + 4);
+    ctx.stroke();
+    // gövde
     const grad = ctx.createLinearGradient(f.px, f.py, tip.x, tip.y);
     grad.addColorStop(0, theme.flipA);
     grad.addColorStop(1, theme.flipB);
     ctx.strokeStyle = grad;
     ctx.lineWidth = f.r * 2;
-    ctx.lineCap = 'round';
-    ctx.shadowColor = theme.flipB;
-    ctx.shadowBlur = f.pressed ? 22 : 10;
+    if (f.pressed) { ctx.shadowColor = theme.flipB; ctx.shadowBlur = 14; }
     ctx.beginPath();
     ctx.moveTo(f.px, f.py);
     ctx.lineTo(tip.x, tip.y);
     ctx.stroke();
     ctx.shadowBlur = 0;
-    // pivot
+    // üst yüz parlaklığı
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = f.r * 0.6;
     ctx.beginPath();
-    ctx.arc(f.px, f.py, f.r + 3, 0, TAU);
+    ctx.moveTo(f.px - 1, f.py - f.r * 0.55);
+    ctx.lineTo(tip.x - 1, tip.y - f.r * 0.55);
+    ctx.stroke();
+    // kauçuk uç
     ctx.fillStyle = '#1a2350';
-    ctx.fill();
+    cFill(ctx, tip.x, tip.y, f.r * 0.72);
+    ctx.strokeStyle = shade(theme.flipB, -0.2);
+    ctx.lineWidth = 2;
+    cStroke(ctx, tip.x, tip.y, f.r * 0.72);
+    // pivot
+    ctx.fillStyle = '#1a2350';
+    cFill(ctx, f.px, f.py, f.r + 3);
     ctx.strokeStyle = theme.flipA;
     ctx.lineWidth = 2;
-    ctx.stroke();
+    cStroke(ctx, f.px, f.py, f.r + 3);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    cFill(ctx, f.px - 2, f.py - 2, 2.2);
   }
 }
 
@@ -1873,28 +2026,52 @@ function drawPlunger() {
   ctx.stroke();
 }
 
+let ballGrad = null;
 function drawBall(b) {
-  // iz
+  // iz: 10 ayrı daire yerine 2 çizgi (çok daha ucuz)
   if (b.trail && b.trail.length > 1) {
-    for (let i = 0; i < b.trail.length; i++) {
-      const t = i / b.trail.length;
-      ctx.beginPath();
-      ctx.arc(b.trail[i].x, b.trail[i].y, BALL_R * t * 0.8, 0, TAU);
-      ctx.fillStyle = withAlpha(theme.trail, t * 0.16);
-      ctx.fill();
-    }
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(b.trail[0].x, b.trail[0].y);
+    for (let i = 1; i < b.trail.length; i++) ctx.lineTo(b.trail[i].x, b.trail[i].y);
+    ctx.strokeStyle = withAlpha(theme.trail, 0.10);
+    ctx.lineWidth = BALL_R * 1.5;
+    ctx.stroke();
+    ctx.strokeStyle = withAlpha(theme.trail, 0.14);
+    ctx.lineWidth = BALL_R * 0.55;
+    ctx.stroke();
   }
-  const g = ctx.createRadialGradient(b.x - 4, b.y - 5, 2, b.x, b.y, BALL_R);
-  g.addColorStop(0, '#ffffff');
-  g.addColorStop(0.4, '#dfe9ff');
-  g.addColorStop(1, '#8194c9');
+  // temas gölgesi
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.30)';
   ctx.beginPath();
-  ctx.arc(b.x, b.y, BALL_R, 0, TAU);
-  ctx.fillStyle = g;
-  ctx.shadowColor = 'rgba(160, 200, 255, 0.9)';
-  ctx.shadowBlur = 12;
+  ctx.ellipse(b.x + 4, b.y + 7, BALL_R * 0.95, BALL_R * 0.55, 0, 0, TAU);
   ctx.fill();
-  ctx.shadowBlur = 0;
+  // krom gövde (gradyan bir kez üretilir)
+  if (!ballGrad) {
+    ballGrad = ctx.createRadialGradient(-4, -5, 2, 0, 0, BALL_R);
+    ballGrad.addColorStop(0, '#ffffff');
+    ballGrad.addColorStop(0.35, '#e6eeff');
+    ballGrad.addColorStop(0.8, '#8b9cc9');
+    ballGrad.addColorStop(1, '#5a688f');
+  }
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.fillStyle = ballGrad;
+  cFill(ctx, 0, 0, BALL_R);
+  // zeminden renk yansıması
+  ctx.globalAlpha = 0.22;
+  ctx.fillStyle = theme.hud;
+  ctx.beginPath();
+  ctx.ellipse(0, BALL_R * 0.45, BALL_R * 0.62, BALL_R * 0.3, 0, 0, TAU);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  // spekülar parlamalar
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+  cFill(ctx, -BALL_R * 0.32, -BALL_R * 0.4, 2.8);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+  cFill(ctx, BALL_R * 0.25, -BALL_R * 0.05, 1.3);
+  ctx.restore();
 }
 
 function drawParticles() {
@@ -1910,16 +2087,18 @@ function drawParticles() {
 function drawPopups() {
   ctx.textAlign = 'center';
   ctx.font = '800 20px "Segoe UI", Roboto, sans-serif';
+  ctx.lineWidth = 3.5;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
   for (const p of popups) {
     const a = 1 - p.t / p.life;
+    const x = clamp(p.x, 40, W - 40), y = p.y - p.t * 50;
     ctx.globalAlpha = a;
+    ctx.strokeText(p.text, x, y);
     ctx.fillStyle = p.color;
-    ctx.shadowColor = p.color;
-    ctx.shadowBlur = 8;
-    ctx.fillText(p.text, clamp(p.x, 40, W - 40), p.y - p.t * 50);
+    ctx.fillText(p.text, x, y);
   }
   ctx.globalAlpha = 1;
-  ctx.shadowBlur = 0;
 }
 
 function drawBallSave() {
@@ -2013,10 +2192,23 @@ document.addEventListener('visibilitychange', () => {
 
 /* ---------------- Ana döngü ---------------- */
 let lastTime = performance.now();
+let perfAvg = 16, perfTimer = 0;
 function frame(now) {
   requestAnimationFrame(frame);
   let dt = (now - lastTime) / 1000;
   lastTime = now;
+
+  // otomatik kalite: kare süresi uzun kalırsa çözünürlüğü kademeli düşür
+  perfAvg += (dt * 1000 - perfAvg) * 0.04;
+  perfTimer += dt;
+  if (perfTimer > 3) {
+    perfTimer = 0;
+    if (perfAvg > 21 && dprCap > 1) {
+      dprCap = Math.max(1, dprCap - 0.5);
+      resize();
+    }
+  }
+
   if (dt > 0.05) dt = 0.05;
   if (state.mode === 'playing') update(dt);
   else state.time += dt;
