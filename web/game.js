@@ -834,11 +834,14 @@ const THEMES = [
       const g = c.createLinearGradient(-r, 0, r, 0);
       g.addColorStop(0, '#a87f3f'); g.addColorStop(0.5, '#c9a24a'); g.addColorStop(1, '#8a6a2a');
       c.fillStyle = g; cFill(c, 0, 0, r);
-      c.strokeStyle = 'rgba(60,40,10,0.6)'; c.lineWidth = 2.5;
-      cStroke(c, 0, -r * 0.45, r * 0.98);
-      cStroke(c, 0, r * 0.45, r * 0.98);
+      c.save();
+      c.beginPath(); c.arc(0, 0, r, 0, TAU); c.clip();
+      c.strokeStyle = 'rgba(60,40,10,0.6)'; c.lineWidth = 3;
+      ln(c, -r, -r * 0.45, r, -r * 0.45);
+      ln(c, -r, r * 0.45, r, r * 0.45);
       c.strokeStyle = '#3a2a10'; c.lineWidth = 1.2;
-      for (let i = -2; i <= 2; i++) ln(c, -r * 0.85, i * r * 0.3, r * 0.85, i * r * 0.3);
+      for (let i = -2; i <= 2; i++) ln(c, -r, i * r * 0.3, r, i * r * 0.3);
+      c.restore();
     },
   },
 
