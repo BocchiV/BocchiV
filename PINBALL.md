@@ -29,10 +29,12 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
   - Top koruması (her serviste 12 sn)
   - Ekstra top (200K / 500K / 1M puanda)
   - Şarjlı plunger ile fırlatma
+  - **Kombo**: art arda (1,3 sn içinde) bumper/hedef/şerit vuruşları kombo sayacını artırır; her 3 vuruşta bonus puan + "KOMBO xN" bildirimi
+  - **Dürtme (nudge) & TILT**: masayı dürtme düğmesiyle (veya `N` tuşuyla) sıkışan topu kurtar; 8 saniyede 3'ten fazla dürtersen **TILT** olursun — flipperlar birkaç saniye kilitlenir
 - **Görsel & ses**: Malzeme kalitesi — pahlı (bevel) duvarlar, perçin detayları, film greni + vinyet, krom top (temas gölgesi, spekülar parlama, zemin yansıması), kauçuk uçlu flipperlar, çukur görünümlü saucer; parçacıklar, ekran sarsıntısı, WebAudio ile sentezlenen ses efektleri, titreşim (haptik) desteği
 - **Performans**: Bumper ve ışıma sprite önbelleği (kare başına gradyan/gölge üretimi yok), tek geçişli top izi, statik masa katmanı; kare süresi uzarsa **otomatik kalite ölçekleme** çözünürlüğü kademeli düşürür
 - **Mobil öncelikli**: Çoklu dokunuş (iki flipper aynı anda), portre tam ekran, her çözünürlüğe uyum
-- **Kayıt**: En yüksek skor cihazda saklanır
+- **Kayıt**: En yüksek skor ve ses (sessiz/açık) tercihi cihazda kalıcı olarak saklanır
 
 ## 🎮 Kontroller
 
@@ -41,6 +43,7 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 | Sol flipper | Ekranın sol yarısı | `←` veya `Z` |
 | Sağ flipper | Ekranın sağ yarısı | `→` veya `M` |
 | Fırlatma | Sağ alttaki topa basılı tut & bırak | `Boşluk` (basılı tut) |
+| Dürt (nudge) | ✦ düğmesi | `N` |
 | Duraklat | ⏸ düğmesi | `P` |
 
 ## 📦 APK Kurulumu

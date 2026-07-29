@@ -42,6 +42,7 @@ window.addEventListener('resize', resize);
 /* ---------------- Ses motoru (WebAudio synth) ---------------- */
 const SFX = (() => {
   let ac = null, master = null, muted = false;
+  try { muted = localStorage.getItem('neonpinball.muted') === '1'; } catch (_) {}
   function ensure() {
     if (!ac) {
       ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -79,7 +80,11 @@ const SFX = (() => {
   return {
     ensure,
     get muted() { return muted; },
-    toggle() { muted = !muted; return muted; },
+    toggle() {
+      muted = !muted;
+      try { localStorage.setItem('neonpinball.muted', muted ? '1' : '0'); } catch (_) {}
+      return muted;
+    },
     flipper()   { thump(0.06, 0.5, 900); },
     launch()    { tone(120, 900, 0.35, 'sawtooth', 0.25); thump(0.2, 0.3, 500); },
     bumper()    { tone(rand(620, 700), 320, 0.12, 'sine', 0.5); tone(1240, 640, 0.08, 'sine', 0.2); },
@@ -97,6 +102,9 @@ const SFX = (() => {
     ballSave()  { tone(440, 880, 0.2, 'square', 0.3); tone(880, 1320, 0.2, 'square', 0.2, 0.1); },
     gameOver()  { [392, 330, 262, 196].forEach((f, i) => tone(f, f, 0.3, 'triangle', 0.3, i * 0.22)); },
     wall()      { thump(0.03, 0.12, 1200); },
+    nudge()     { thump(0.05, 0.22, 850); },
+    tilt()      { tone(180, 55, 0.55, 'sawtooth', 0.32); thump(0.3, 0.2, 200); },
+    combo()     { [880, 1100, 1320].forEach((f, i) => tone(f, f, 0.09, 'triangle', 0.22, i * 0.05)); },
   };
 })();
 
@@ -828,7 +836,18 @@ const state = {
   levelTarget: 10000,
   levelPhase: null,        // null | 'celebrate'
   levelTimer: 0,
+  combo: 0,                 // art arda vuruş kombosu
+  comboTimer: 0,
+  tilt: 0,                  // >0 iken flipperlar kilitli (TILT cezası)
+  nudgeCooldown: 0,
 };
+
+const NUDGE_WINDOW = 8;      // saniye — bu süre içindeki dürtmeler sayılır
+const NUDGE_LIMIT = 3;       // limit aşılırsa TILT
+const NUDGE_COOLDOWN = 0.35; // art arda dürtme spamını önler
+const TILT_DURATION = 3.2;   // flipperların kilitli kaldığı süre
+const COMBO_WINDOW = 1.3;    // bu süre içinde yeni vuruş gelmezse kombo sıfırlanır
+const nudgeLog = [];
 
 try { state.hiscore = parseInt(localStorage.getItem('neonpinball.hiscore') || '0', 10) || 0; } catch (_) {}
 
@@ -878,6 +897,62 @@ function addScore(base, x, y, label) {
   if (label) banner(label);
 }
 function fmt(n) { return n.toLocaleString('tr-TR'); }
+
+/* ---------------- Kombo (art arda vuruş) ---------------- */
+const comboEl = document.getElementById('combo');
+
+function registerHit(base, x, y) {
+  if (state.tilt > 0) { addScore(base, x, y); return; }
+  state.combo++;
+  state.comboTimer = COMBO_WINDOW;
+  addScore(base, x, y);
+  updateComboHud();
+  if (state.combo >= 3 && state.combo % 3 === 0) {
+    const bonus = 150 * state.combo;
+    addScore(bonus, x, y - 24);
+    banner('KOMBO x' + state.combo + '!');
+    SFX.combo(); buzz(25);
+  }
+}
+
+function updateComboHud() {
+  if (state.combo >= 2) {
+    comboEl.textContent = 'KOMBO x' + state.combo;
+    comboEl.classList.remove('hidden');
+    comboEl.classList.remove('pop');
+    void comboEl.offsetWidth;
+    comboEl.classList.add('pop');
+  } else {
+    comboEl.classList.add('hidden');
+  }
+}
+
+/* ---------------- Dürtme (nudge) & TILT ---------------- */
+function nudgeTable() {
+  if (state.mode !== 'playing' || state.tilt > 0 || state.nudgeCooldown > 0) return;
+  state.nudgeCooldown = NUDGE_COOLDOWN;
+  nudgeLog.push(state.time);
+  while (nudgeLog.length && state.time - nudgeLog[0] > NUDGE_WINDOW) nudgeLog.shift();
+
+  const dir = Math.random() < 0.5 ? -1 : 1;
+  for (const b of activeBalls) {
+    b.vx += dir * rand(140, 230) + rand(-40, 40);
+    b.vy -= rand(50, 130);
+  }
+  state.shake = Math.max(state.shake, 6);
+  SFX.nudge(); buzz(20);
+
+  if (nudgeLog.length > NUDGE_LIMIT) triggerTilt();
+}
+
+function triggerTilt() {
+  state.tilt = TILT_DURATION;
+  nudgeLog.length = 0;
+  flipL.pressed = false;
+  flipR.pressed = false;
+  banner('TILT!');
+  SFX.tilt(); buzz([80, 40, 80, 40, 120]);
+}
 
 let bannerTimer = null;
 function banner(text) {
@@ -945,6 +1020,11 @@ function newServe() {
   gateSeg.enabled = false;
   plunger.pull = 0;
   state.ballSave = BALL_SAVE_TIME;
+  state.tilt = 0;
+  state.combo = 0;
+  state.comboTimer = 0;
+  nudgeLog.length = 0;
+  updateComboHud();
 }
 
 function launchBall(power) {
@@ -970,7 +1050,7 @@ function spawnMultiballBalls() {
 function drainBall(b) {
   const idx = activeBalls.indexOf(b);
   if (idx >= 0) activeBalls.splice(idx, 1);
-  spawnParticles(b.x, clamp(b.y, 0, H - 10), '#ff5f9e', 14, 200);
+  spawnParticles(b.x, clamp(b.y, 0, H - 10), theme.accent, 14, 200);
 
   if (activeBalls.length > 0) {
     if (activeBalls.length === 1 && state.multiball) {
@@ -1100,7 +1180,7 @@ function handleSegmentHit(b, s, vn, qx, qy) {
     const nx = s.tag === 'slingL' ? 0.72 : -0.72;
     b.vx += nx * 620;
     b.vy -= 480;
-    addScore(75, qx, qy);
+    registerHit(75, qx, qy);
     spawnParticles(qx, qy, theme.flipA, 10, 320);
     SFX.sling(); buzz(15);
     state.glow = Math.max(state.glow, 0.5);
@@ -1110,7 +1190,7 @@ function handleSegmentHit(b, s, vn, qx, qy) {
     t.up = false;
     t.seg.enabled = false;
     t.flash = 0.4;
-    addScore(1000, qx, qy);
+    registerHit(1000, qx, qy);
     spawnParticles(qx, qy, theme.target, 12, 280);
     SFX.target(); buzz(20);
     if (targets.every(x => !x.up)) {
@@ -1139,7 +1219,7 @@ function collideBumper(b, bp) {
   b.vx += nx * bp.kick;
   b.vy += ny * bp.kick;
   bp.flash = 0.3;
-  addScore(150, bp.x + nx * bp.r, bp.y + ny * bp.r);
+  registerHit(150, bp.x + nx * bp.r, bp.y + ny * bp.r);
   spawnParticles(b.x, b.y, theme.spark, 8, 300);
   SFX.bumper(); buzz(12);
   state.glow = Math.max(state.glow, 0.6);
@@ -1263,7 +1343,7 @@ function stepBall(b, dt) {
       if (!l.lit) {
         l.lit = true;
         l.flash = 0.5;
-        addScore(500, l.x, l.y);
+        registerHit(500, l.x, l.y);
         SFX.lane();
         if (lanes.every(x => x.lit)) {
           addScore(5000);
@@ -1348,6 +1428,12 @@ function update(dt) {
   if (saucer.glow > 0) saucer.glow -= dt * 1.4;
   if (state.glow > 0) state.glow -= dt * 2;
   if (state.shake > 0) state.shake -= dt * 24;
+  if (state.tilt > 0) state.tilt = Math.max(0, state.tilt - dt);
+  if (state.nudgeCooldown > 0) state.nudgeCooldown -= dt;
+  if (state.combo > 0) {
+    state.comboTimer -= dt;
+    if (state.comboTimer <= 0) { state.combo = 0; updateComboHud(); }
+  }
 
   if (bankResetTimer > 0) {
     bankResetTimer -= dt;
@@ -1596,6 +1682,7 @@ function draw() {
   drawParticles();
   drawPopups();
   drawBallSave();
+  drawTilt();
 }
 
 function drawMech() {
@@ -2114,6 +2201,18 @@ function drawBallSave() {
   ctx.shadowBlur = 0;
 }
 
+function drawTilt() {
+  if (state.tilt <= 0) return;
+  if (Math.sin(state.time * 16) < -0.3) return;   // hızlı yanıp sönme
+  ctx.textAlign = 'center';
+  ctx.font = '900 30px "Segoe UI", Roboto, sans-serif';
+  ctx.fillStyle = 'rgba(255, 70, 70, 0.9)';
+  ctx.shadowColor = 'rgba(255, 40, 40, 0.8)';
+  ctx.shadowBlur = 14;
+  ctx.fillText('T İ L T', 251, 172);
+  ctx.shadowBlur = 0;
+}
+
 /* ---------------- Girdi ---------------- */
 const touches = new Map();   // pointerId -> 'L' | 'R' | 'P'
 
@@ -2126,6 +2225,7 @@ function pointerZone(e) {
 }
 
 function pressZone(z) {
+  if (state.tilt > 0 && (z === 'L' || z === 'R')) return;
   if (z === 'L') { if (!flipL.pressed) SFX.flipper(); flipL.pressed = true; }
   else if (z === 'R') { if (!flipR.pressed) SFX.flipper(); flipR.pressed = true; }
   else if (z === 'P') { plunger.active = true; }
@@ -2165,6 +2265,7 @@ window.addEventListener('keydown', e => {
   else if (e.code === 'ArrowRight' || e.code === 'Slash' || e.code === 'KeyM') pressZone('R');
   else if (e.code === 'Space' || e.code === 'ArrowDown') { if (state.mode === 'playing') plunger.active = true; }
   else if (e.code === 'KeyP') { state.mode === 'playing' ? pauseGame() : resumeGame(); }
+  else if (e.code === 'KeyN') { if (state.mode === 'playing') nudgeTable(); }
 });
 window.addEventListener('keyup', e => {
   if (e.code === 'ArrowLeft' || e.code === 'KeyZ') releaseZone('L');
@@ -2184,6 +2285,10 @@ document.getElementById('btn-mute').addEventListener('click', () => {
   const muted = SFX.toggle();
   document.getElementById('icon-sound-on').classList.toggle('hidden', muted);
   document.getElementById('icon-sound-off').classList.toggle('hidden', !muted);
+});
+document.getElementById('btn-nudge').addEventListener('click', () => {
+  SFX.ensure();
+  if (state.mode === 'playing') nudgeTable();
 });
 
 document.addEventListener('visibilitychange', () => {
@@ -2220,9 +2325,13 @@ document.querySelector('#hiscore span').textContent = fmt(state.hiscore);
 buildLevel((Math.random() * 2 ** 31) | 0);   // menü arkaplanı için rastgele masa
 resize();
 updateHud();
+if (SFX.muted) {
+  document.getElementById('icon-sound-on').classList.add('hidden');
+  document.getElementById('icon-sound-off').classList.remove('hidden');
+}
 requestAnimationFrame(frame);
 
 // test kancası (otomatik testler için)
-window.__neonpinball = { state, addScore };
+window.__neonpinball = { state, addScore, registerHit, nudgeTable, triggerTilt };
 
 })();

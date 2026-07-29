@@ -21,11 +21,17 @@
       <div id="score-label">SKOR</div>
       <div id="goal-wrap"><div id="goal-bar"></div></div>
       <div id="goal-label">HEDEF 10.000</div>
+      <div id="combo" class="hidden">KOMBO x3</div>
     </div>
     <div id="hud-right">
       <div id="level" class="chip">B1</div>
       <div id="mult" class="chip">x1</div>
       <div id="balls" class="chip">●●●</div>
+      <button id="btn-nudge" class="icon-btn" aria-label="Masayı dürt">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="M12 2.5 L14.1 9.1 L20.8 9.1 L15.3 13 L17.4 19.6 L12 15.7 L6.6 19.6 L8.7 13 L3.2 9.1 L9.9 9.1 Z" fill="currentColor"/>
+        </svg>
+      </button>
       <button id="btn-pause" class="icon-btn" aria-label="Duraklat">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
           <rect x="6" y="4.5" width="4.2" height="15" rx="2" fill="currentColor"/>
@@ -57,7 +63,8 @@
       <button id="btn-play" class="big-btn">OYNA</button>
       <div class="hint">
         Sol yarı = sol flipper · Sağ yarı = sağ flipper<br>
-        Fırlatmak için sağ alttaki topu basılı tut &amp; bırak
+        Fırlatmak için sağ alttaki topu basılı tut &amp; bırak<br>
+        Topu kurtarmak için dürt — ama çok dürtersen TILT olursun!
       </div>
     </div>
     <div class="panel hidden" id="panel-over">
