@@ -1477,21 +1477,22 @@ function buildLevel(seed) {
   saucer.cooldown = 0;
   saucer.glow = 0;
 
-  // Bumperlar: 2-4 adet, aday noktalardan seçilip hafifçe kaydırılır
-  // (tuğlalı temada orta alan tuğlalara ayrıldığı için yalnızca üst noktalar)
-  let spots = [[170, 250], [332, 250], [251, 355], [251, 175], [150, 390], [352, 390], [251, 265]];
-  if (theme.mech && theme.mech.bricks) spots = spots.filter(s => s[1] <= 300);
-  if (theme.mech && theme.mech.bumperMotion === 'slideX') spots = spots.filter(s => s[0] >= 170 && s[0] <= 332);
-  for (let i = spots.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [spots[i], spots[j]] = [spots[j], spots[i]];
-  }
-  const bN = Math.min(spots.length, 2 + Math.floor(rng() * 3));
-  for (const [sx, sy] of spots) {
-    if (bumpers.length >= bN) break;
-    const x = sx + (rng() * 24 - 12), y = sy + (rng() * 24 - 12);
+  // Bumperlar: 2-4 adet, masanın genişçe bir bölgesine serbestçe (reddetme örneklemesiyle)
+  // dağıtılır — böylece her bölümde farklı bir dizilim ve farklı bir bölge kullanılır,
+  // hep aynı köşede kümelenme olmaz.
+  const bm = theme.mech || {};
+  let bx0 = 65, bx1 = 450, by0 = 145, by1 = 580;
+  if (bm.bricks) by1 = 370;                                  // tuğla bloğunun üstünde kal
+  if (bm.bumperMotion === 'slideX') { bx0 = 180; bx1 = 322; by1 = 300; }  // ray sallanması masaya sığsın
+  const bN = 2 + Math.floor(rng() * 3);
+  let bTries = 0;
+  while (bumpers.length < bN && bTries++ < 300) {
+    const x = bx0 + rng() * (bx1 - bx0);
+    const y = by0 + rng() * (by1 - by0);
     const r = 26 + rng() * 6;
-    if (bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 28)) continue;
+    if (bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r + 30)) continue;
+    if (Math.hypot(x - saucer.x, y - saucer.y) < r + saucer.r + 46) continue;
+    if (Math.abs(x - tx) < 66 && y > y0 - 24 && y < y0 + wallH + 24) continue;   // hedef bankından uzak dur
     bumpers.push({ x, y, r, baseX: x, baseY: y, baseR: r, phase: rng() * TAU, flash: 0, kick: 900 + rng() * 160 });
   }
 
@@ -3464,7 +3465,8 @@ requestAnimationFrame(frame);
 // test kancası (otomatik testler için)
 window.__neonpinball = {
   state, addScore, registerHit, nudgeTable, triggerTilt,
-  THEMES, mech,
+  THEMES, mech, bumpers, saucer,
+  buildRandomLevel() { buildLevel((Math.random() * 2 ** 31) | 0); },
   forceTheme(idx) {
     forcedThemeIdx = idx;
     buildLevel((Math.random() * 2 ** 31) | 0);

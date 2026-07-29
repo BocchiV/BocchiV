@@ -10,7 +10,7 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 
 ## ✨ Özellikler
 
-- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi. Aynı temanın art arda (son 4 bölüme kadar) tekrar gelmemesi garanti edilir
+- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper **masanın geniş bir bölgesine reddetme-örneklemesiyle** dağıtılır (hep aynı köşede kümelenmez), hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi. Aynı temanın art arda (son 4 bölüme kadar) tekrar gelmemesi garanti edilir
 - **Bölüm içi yan görev**: Skor hedefinin yanında her bölümde farklı, rastgele bir mini görev belirlenir ("6 Bumper Vur", "Kombo x5 Yap", "Saucer'a 2 Kez Sok" gibi) — tamamlanınca ölçekli bonus puan. Oynanışın "sadece skor biriktir" tekdüzeliğine düşmesini engeller
 - **20 özgün tema, 20 farklı oyun konsepti** — her bölüm hem görsel olarak hem de **oynanış olarak** bambaşkadır:
   - **Teknik Çizim** · *Raylı Bumperlar*: plan kağıdı estetiği; bumperlar kesikli raylar üzerinde sürekli hareket eder
