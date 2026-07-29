@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05060f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Neon Pinball</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305060f'/%3E%3Cpath d='M8,23 L8,19 A8,8 0 0 1 24,19 L24,23' fill='none' stroke='%2321c7ff' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='12' r='2.6' fill='%23ff2fb0'/%3E%3Ccircle cx='13' cy='18' r='2' fill='%23dfe9ff'/%3E%3Cpath d='M10,24 L14.5,26' stroke='%23ffd166' stroke-width='2.6' stroke-linecap='round'/%3E%3Cpath d='M22,24 L17.5,26' stroke='%23ffd166' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game"></canvas>
+
+  <div id="hud">
+    <div id="hud-left">
+      <div id="score">0</div>
+      <div id="score-label">SKOR</div>
+      <div id="goal-wrap"><div id="goal-bar"></div></div>
+      <div id="goal-label">HEDEF 10.000</div>
+      <div id="mission"></div>
+      <div id="combo" class="hidden">KOMBO x3</div>
+    </div>
+    <div id="hud-right">
+      <div id="level" class="chip">B1</div>
+      <div id="mult" class="chip">x1</div>
+      <div id="balls" class="chip">●●●</div>
+      <button id="btn-nudge" class="icon-btn" aria-label="Masayı dürt">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="M12 2.5 L14.1 9.1 L20.8 9.1 L15.3 13 L17.4 19.6 L12 15.7 L6.6 19.6 L8.7 13 L3.2 9.1 L9.9 9.1 Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="btn-pause" class="icon-btn" aria-label="Duraklat">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <rect x="6" y="4.5" width="4.2" height="15" rx="2" fill="currentColor"/>
+          <rect x="13.8" y="4.5" width="4.2" height="15" rx="2" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="btn-mute" class="icon-btn" aria-label="Ses">
+        <svg id="icon-sound-on" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+          <path d="M4.5 9.2 L4.5 14.8 L8.4 14.8 L13 18.8 L13 5.2 L8.4 9.2 Z" fill="currentColor"/>
+          <path d="M15.8 9 A4.4 4.4 0 0 1 15.8 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M18.2 6.6 A7.6 7.6 0 0 1 18.2 17.4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-sound-off" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" class="hidden">
+          <path d="M4.5 9.2 L4.5 14.8 L8.4 14.8 L13 18.8 L13 5.2 L8.4 9.2 Z" fill="currentColor"/>
+          <path d="M16 9.5 L21 14.5 M21 9.5 L16 14.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="banner"></div>
+
+  <div id="overlay" class="overlay">
+    <div class="panel" id="panel-menu">
+      <div class="title-glow">NEON</div>
+      <div class="title-main">PINBALL</div>
+      <div class="subtitle">ARCADE</div>
+      <div id="hiscore" class="hiscore">EN YÜKSEK SKOR<br><span>0</span></div>
+      <button id="btn-play" class="big-btn">OYNA</button>
+      <div class="hint">
+        Sol yarı = sol flipper · Sağ yarı = sağ flipper<br>
+        Fırlatmak için sağ alttaki topu basılı tut &amp; bırak<br>
+        Topu kurtarmak için dürt — ama çok dürtersen TILT olursun!
+      </div>
+    </div>
+    <div class="panel hidden" id="panel-over">
+      <div class="title-main small">OYUN BİTTİ</div>
+      <div id="final-score" class="final-score">0</div>
+      <div id="new-record" class="new-record hidden">★ YENİ REKOR ★</div>
+      <div id="over-hiscore" class="hiscore">EN YÜKSEK SKOR<br><span>0</span></div>
+      <button id="btn-again" class="big-btn">TEKRAR OYNA</button>
+    </div>
+    <div class="panel hidden" id="panel-pause">
+      <div class="title-main small">DURAKLADI</div>
+      <button id="btn-resume" class="big-btn">DEVAM ET</button>
+      <button id="btn-restart" class="big-btn ghost">YENİDEN BAŞLAT</button>
+    </div>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
