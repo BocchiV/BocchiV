@@ -10,8 +10,9 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
 
 ## ✨ Özellikler
 
-- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi
-- **8 özgün tema, 8 farklı oyun konsepti** — her bölüm hem görsel olarak hem de **oynanış olarak** bambaşkadır:
+- **Bölüm sistemi & rastgelelik**: Her bölümün bir hedef puanı vardır; hedefe ulaşınca +1 top kazanılır ve **rastgele üretilen** yeni bir bölüme geçilir. Dizilim de her bölümde değişir: 2-4 bumper, hedef bankı sol/sağ tarafta (3-4 hedef), 2-4 rollover şeridi, değişken saucer konumu ve yerçekimi. Aynı temanın art arda (son 4 bölüme kadar) tekrar gelmemesi garanti edilir
+- **Bölüm içi yan görev**: Skor hedefinin yanında her bölümde farklı, rastgele bir mini görev belirlenir ("6 Bumper Vur", "Kombo x5 Yap", "Saucer'a 2 Kez Sok" gibi) — tamamlanınca ölçekli bonus puan. Oynanışın "sadece skor biriktir" tekdüzeliğine düşmesini engeller
+- **20 özgün tema, 20 farklı oyun konsepti** — her bölüm hem görsel olarak hem de **oynanış olarak** bambaşkadır:
   - **Teknik Çizim** · *Raylı Bumperlar*: plan kağıdı estetiği; bumperlar kesikli raylar üzerinde sürekli hareket eder
   - **Retro CRT** · *Piksel Tuğlalar*: masanın ortasında kırılabilir 15'lik tuğla duvarı — hepsini temizle, bonus kap
   - **Günbatımı** · *Çöl Rüzgarı*: yön ve şiddeti değişen rüzgar topu savurur; üstteki gösterge rüzgarı gösterir
@@ -20,6 +21,18 @@ Saf HTML5 Canvas + WebAudio ile yazıldı — sıfır bağımlılık. Android AP
   - **Galaksi** · *Yerçekimi Kuyuları*: gezegen bumperlar topu kendine çeker, top kavisli yörüngeler çizer
   - **Orman** · *Büyüyen Mantarlar*: mantar bumperlar nefes alır gibi büyüyüp küçülür — çarpışma alanı da değişir
   - **Şeker** · *Şurup Havuzları*: masadaki yapışkan şurup gölcükleri topu yavaşlatır
+  - **Portal** · *Portallar*: eşleşmiş iki portal arasında ışınlanma — hız korunur, hatta artar
+  - **Mıknatıs** · *Yakala & Fırlat*: mıknatıs topu yakalar, kısa süre tutar; flipper basılı tutarak yön seçip fırlatabilirsin
+  - **Buzul** · *Buzlu Pist*: masa genelinde hafif sürtünme var, buz yamalarına girince top hiç yavaşlamadan kayar
+  - **Lazer** · *Lazer Kapı*: yanıp sönen lazer bariyeri — açıkken geçersen sekip cezalanırsın, kapalıyken geçersen bonus kapar
+  - **Fabrika** · *Konveyör Bant*: bir bölgede top sürekli sabit yöne itilir
+  - **Kronos** · *Zaman Yavaşlatma*: bumpera her çarpışta birkaç saniyeliğine tüm oyun yavaşlar — hassas nişan penceresi
+  - **Değirmen** · *Rüzgar Değirmeni*: dönen kanat engeli topu öngörülemez şekilde savurur
+  - **Fırtına** · *Zincir Şimşek*: bir bumpera vurunca yakın bumperlara zincirleme şimşek sıçrar, her sıçrama bonus verir
+  - **Bataklık** · *Bataklık*: çukura giren top yavaşça batar, birkaç saniye sonra güçlü fırlatılarak kurtulur
+  - **Hortum** · *Yelpaze*: merkezden dışa doğru iten rüzgar alanı topu radyal olarak savurur
+  - **İstasyon** · *Sıfır Yerçekimi Nabzı*: periyodik olarak yerçekimi kaybolur/tersine döner, top havada süzülür
+  - **Roket** · *Fırlatma Yastıkları*: sabit yönlü yastıklar topu deterministik güçle fırlatır
   - HUD renkleri, duvar stili, top izi, ortam parçacıkları ve ses geri bildirimleri temayla birlikte değişir
 - **Gerçekçi fizik**: 240 Hz alt adımlı fizik motoru, dönen flipper çarpışmaları, top-top çarpışması (multiball)
 - **Masa öğeleri**: 3 pop bumper, 2 slingshot, 3'lü drop target bankı, rollover şeritleri, spinner, saucer (kilit çukuru), tek yön kapılı fırlatma kanalı

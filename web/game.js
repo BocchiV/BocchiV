@@ -550,8 +550,508 @@ const THEMES = [
       cFill(c, 0, 0, r * 0.24);
     },
   },
+
+  { // 9 — solucan deliği: eşleşmiş portallar arasında ışınlanma
+    name: 'PORTAL',
+    hud: '#c9a8ff',
+    mechLabel: 'PORTALLAR',
+    mech: { portals: true },
+    wallStyle: { color: '#8a5fe0', width: 4, blur: 8, dash: null },
+    accent: '#5fd8ff', target: '#ffe3ff', targetGlow: '#c9a8ff',
+    saucer: '#7a3fd8', saucerHi: '#d8b8ff',
+    flipA: '#e8d8ff', flipB: '#7a3fd8',
+    trail: '#c9a8ff', spark: '#5fd8ff',
+    ambient: { type: 'stars', color: '#ffffff', max: 16, rate: 7 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#140a2e'); g.addColorStop(0.6, '#0c0620'); g.addColorStop(1, '#050310');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      for (const [x, y, r, col] of [[160, 300, 200, 'rgba(122, 63, 216, 0.16)'], [370, 620, 220, 'rgba(95, 216, 255, 0.12)']]) {
+        const n = c.createRadialGradient(x, y, 0, x, y, r);
+        n.addColorStop(0, col); n.addColorStop(1, 'transparent');
+        c.fillStyle = n; cFill(c, x, y, r);
+      }
+      // warp çizgileri
+      c.strokeStyle = 'rgba(200, 168, 255, 0.08)';
+      c.lineWidth = 1;
+      for (let i = 0; i < 14; i++) {
+        const a = rng() * TAU, len = 120 + rng() * 300;
+        const cx = 270, cy = 460;
+        ln(c, cx + Math.cos(a) * 40, cy + Math.sin(a) * 40, cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+      }
+    },
+    bumperGlow: '#c9a8ff',
+    bumperSpin: 1.3,
+    paintBumper(c, r) {
+      c.fillStyle = '#160a30';
+      cFill(c, 0, 0, r);
+      for (let i = 0; i < 3; i++) {
+        c.strokeStyle = withAlpha(i % 2 ? '#5fd8ff' : '#c9a8ff', 0.85 - i * 0.2);
+        c.lineWidth = 2.5;
+        c.beginPath(); c.ellipse(0, 0, r * (0.95 - i * 0.24), r * 0.36 * (0.95 - i * 0.24), i * 0.9, 0, TAU); c.stroke();
+      }
+      c.fillStyle = '#fff';
+      cFill(c, 0, 0, r * 0.16);
+    },
+  },
+
+  { // 10 — mıknatıs atölyesi: yakala & fırlat
+    name: 'MIKNATIS',
+    hud: '#ffb347',
+    mechLabel: 'MIKNATIS',
+    mech: { magnet: { holdTime: 1.0 } },
+    wallStyle: { color: '#8a94a8', width: 5, blur: 4, dash: null },
+    accent: '#ffb347', target: '#ffe3a8', targetGlow: '#ffb347',
+    saucer: '#5a6478', saucerHi: '#c8d0e0',
+    flipA: '#ffe3a8', flipB: '#8a94a8',
+    trail: '#c8d0e0', spark: '#ffb347',
+    ambient: { type: 'embers', color: '#ffb347', max: 10, rate: 4 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#242a34'); g.addColorStop(1, '#12151c');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.strokeStyle = 'rgba(160, 176, 200, 0.08)'; c.lineWidth = 1;
+      for (let y = 0; y < H; y += 90) ln(c, 0, y, W, y);
+      for (let x = 0; x < W; x += 90) ln(c, x, 0, x, H);
+      c.fillStyle = 'rgba(160, 176, 200, 0.15)';
+      for (let gy = 45; gy < H; gy += 90) for (let gx = 45; gx < W; gx += 90) cFill(c, gx, gy, 2);
+      c.save(); c.rotate(-0.15);
+      for (let x = -600; x < W + 400; x += 46) { c.fillStyle = 'rgba(255, 179, 71, 0.05)'; c.fillRect(x, -100, 20, H + 400); }
+      c.restore();
+    },
+    bumperGlow: '#ffb347',
+    paintBumper(c, r) {
+      c.fillStyle = '#2a2f3a';
+      cFill(c, 0, 0, r);
+      c.lineWidth = r * 0.36;
+      c.strokeStyle = '#c43b3b';
+      c.beginPath(); c.arc(0, 2, r * 0.62, Math.PI * 0.1, Math.PI * 0.9); c.stroke();
+      c.strokeStyle = '#3b5fc4';
+      c.beginPath(); c.arc(0, 2, r * 0.62, Math.PI * 1.1, Math.PI * 1.9); c.stroke();
+      c.fillStyle = '#dfe4ea';
+      c.fillRect(-r * 0.78, -r * 0.1, r * 0.22, r * 0.3);
+      c.fillRect(r * 0.56, -r * 0.1, r * 0.22, r * 0.3);
+    },
+  },
+
+  { // 11 — buzul: sürtünmesiz kayma yamaları
+    name: 'BUZUL',
+    hud: '#bfe9ff',
+    mechLabel: 'BUZLU PİST',
+    mech: { ice: { baseDrag: 0.4 } },
+    wallStyle: { color: '#eaffff', width: 4, blur: 6, dash: null },
+    accent: '#7fd4ff', target: '#eafcff', targetGlow: '#bfe9ff',
+    saucer: '#4f8fd8', saucerHi: '#cfeeff',
+    flipA: '#eafcff', flipB: '#4f8fd8',
+    trail: '#cfeeff', spark: '#eafcff',
+    ambient: { type: 'stars', color: '#eafcff', max: 12, rate: 5 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#0e2438'); g.addColorStop(0.5, '#123049'); g.addColorStop(1, '#0a1a28');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      // aurora bantları
+      for (let i = 0; i < 3; i++) {
+        const y = 90 + i * 46;
+        const a = c.createLinearGradient(0, y - 30, W, y + 30);
+        a.addColorStop(0, 'transparent');
+        a.addColorStop(0.5, i % 2 ? 'rgba(159, 255, 210, 0.10)' : 'rgba(191, 233, 255, 0.10)');
+        a.addColorStop(1, 'transparent');
+        c.fillStyle = a; c.fillRect(0, y - 30, W, 60);
+      }
+      // buz çatlakları
+      c.strokeStyle = 'rgba(234, 252, 255, 0.10)'; c.lineWidth = 1.4;
+      for (let i = 0; i < 8; i++) {
+        let x = rng() * W, y = 500 + rng() * 400;
+        c.beginPath(); c.moveTo(x, y);
+        for (let s = 0; s < 4; s++) { x += rng() * 60 - 30; y += rng() * 40 - 10; c.lineTo(x, y); }
+        c.stroke();
+      }
+    },
+    bumperGlow: '#bfe9ff',
+    paintBumper(c, r) {
+      const g = c.createLinearGradient(-r, -r, r, r);
+      g.addColorStop(0, '#ffffff'); g.addColorStop(0.5, '#bfe9ff'); g.addColorStop(1, '#4f8fd8');
+      c.fillStyle = g;
+      c.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = i * TAU / 6 - Math.PI / 2, x = Math.cos(a) * r, y = Math.sin(a) * r;
+        i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+      }
+      c.closePath(); c.fill();
+      c.strokeStyle = 'rgba(255,255,255,0.8)'; c.lineWidth = 1.5; c.stroke();
+      c.strokeStyle = 'rgba(255,255,255,0.6)';
+      ln(c, 0, -r * 0.5, 0, r * 0.5);
+    },
+  },
+
+  { // 12 — lazer ızgara: tempolu tuzak kapısı
+    name: 'LAZER',
+    hud: '#ff3d6b',
+    mechLabel: 'LAZER KAPI',
+    mech: { laserGate: { period: 2.2, onRatio: 0.42 } },
+    wallStyle: { color: '#ff2a55', width: 4, blur: 10, dash: null },
+    accent: '#00e5ff', target: '#ffe3ec', targetGlow: '#ff3d6b',
+    saucer: '#1a1030', saucerHi: '#ff3d6b',
+    flipA: '#00e5ff', flipB: '#ff2a55',
+    trail: '#ff3d6b', spark: '#00e5ff',
+    ambient: { type: 'embers', color: '#ff3d6b', max: 10, rate: 3 },
+    bg(c) {
+      c.fillStyle = '#050208'; c.fillRect(0, 0, W, H);
+      c.strokeStyle = 'rgba(0, 229, 255, 0.10)'; c.lineWidth = 1;
+      const vpx = 270, vpy = 40;
+      for (let x = -200; x <= W + 200; x += 60) ln(c, x, H, vpx + (x - vpx) * 0.08, vpy);
+      for (let i = 0; i < 11; i++) ln(c, 0, vpy + (H - vpy) * Math.pow(0.78, i), W, vpy + (H - vpy) * Math.pow(0.78, i));
+      const glow = c.createRadialGradient(vpx, vpy + 80, 10, vpx, vpy + 80, 260);
+      glow.addColorStop(0, 'rgba(255, 61, 107, 0.14)'); glow.addColorStop(1, 'transparent');
+      c.fillStyle = glow; cFill(c, vpx, vpy + 80, 260);
+    },
+    bumperGlow: '#00e5ff',
+    paintBumper(c, r) {
+      function hex(rr) {
+        c.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const a = i * TAU / 6, x = Math.cos(a) * rr, y = Math.sin(a) * rr;
+          i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+        }
+        c.closePath();
+      }
+      c.fillStyle = '#140a1e'; hex(r); c.fill();
+      c.strokeStyle = '#ff3d6b'; c.lineWidth = 2.5; hex(r * 0.9); c.stroke();
+      c.strokeStyle = '#00e5ff'; c.lineWidth = 1.6; hex(r * 0.55); c.stroke();
+      c.fillStyle = '#00e5ff'; cFill(c, 0, 0, r * 0.14);
+    },
+  },
+
+  { // 13 — fabrika: sürekli itiş yapan konveyör bandı
+    name: 'FABRİKA',
+    hud: '#e8c34a',
+    mechLabel: 'KONVEYÖR BANT',
+    mech: { conveyor: { force: 210 } },
+    wallStyle: { color: '#6a6f7a', width: 5, blur: 3, dash: null },
+    accent: '#e8b53a', target: '#fff3c4', targetGlow: '#e8b53a',
+    saucer: '#4a4f5a', saucerHi: '#c4c9d4',
+    flipA: '#fff3c4', flipB: '#6a6f7a',
+    trail: '#c4c9d4', spark: '#e8b53a',
+    ambient: { type: 'embers', color: '#c4c9d4', max: 8, rate: 3 },
+    bg(c) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#242620'); g.addColorStop(1, '#121310');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.fillStyle = 'rgba(0,0,0,0.15)';
+      for (let x = 0; x < W; x += 34) c.fillRect(x, 0, 17, H);
+      for (const [x, y] of [[130, 140], [370, 220], [200, 700]]) {
+        const spot = c.createRadialGradient(x, y, 4, x, y, 160);
+        spot.addColorStop(0, 'rgba(232, 179, 58, 0.10)'); spot.addColorStop(1, 'transparent');
+        c.fillStyle = spot; cFill(c, x, y, 160);
+      }
+      c.save(); c.translate(0, H - 46); c.rotate(-0.05);
+      for (let x = -60; x < W + 60; x += 40) { c.fillStyle = (x / 40) % 2 ? '#e8b53a' : '#161616'; c.fillRect(x, 0, 40, 20); }
+      c.restore();
+    },
+    bumperGlow: '#e8b53a',
+    paintBumper(c, r) {
+      c.fillStyle = '#3a3f4a';
+      const teeth = 10;
+      c.beginPath();
+      for (let i = 0; i < teeth * 2; i++) {
+        const a = i * Math.PI / teeth, rr = i % 2 ? r : r * 0.8;
+        const x = Math.cos(a) * rr, y = Math.sin(a) * rr;
+        i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+      }
+      c.closePath(); c.fill();
+      c.strokeStyle = '#e8b53a'; c.lineWidth = 2; c.stroke();
+      c.fillStyle = '#1a1c20'; cFill(c, 0, 0, r * 0.34);
+    },
+  },
+
+  { // 14 — kronos: bumper vuruşunda zaman yavaşlar
+    name: 'KRONOS',
+    hud: '#ffcf7a',
+    mechLabel: 'ZAMAN YAVAŞLATMA',
+    mech: { bulletTime: { duration: 1.5 } },
+    wallStyle: { color: '#c9a24a', width: 4, blur: 5, dash: null },
+    accent: '#8a5a2a', target: '#ffe9c4', targetGlow: '#ffcf7a',
+    saucer: '#5a3a1a', saucerHi: '#ffcf7a',
+    flipA: '#ffe9c4', flipB: '#8a5a2a',
+    trail: '#ffcf7a', spark: '#ffe9c4',
+    ambient: { type: 'fireflies', color: '#ffcf7a', max: 8, rate: 3 },
+    bg(c, rng) {
+      const g = c.createRadialGradient(270, 400, 60, 270, 460, 560);
+      g.addColorStop(0, '#3a2a14'); g.addColorStop(1, '#140d08');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.strokeStyle = 'rgba(201, 162, 74, 0.14)'; c.lineWidth = 6;
+      for (const [x, y, r] of [[150, 260, 130], [380, 600, 170], [90, 700, 90]]) {
+        cStroke(c, x, y, r);
+        c.lineWidth = 3;
+        for (let i = 0; i < 10; i++) {
+          const a = i * TAU / 10;
+          ln(c, x + Math.cos(a) * r, y + Math.sin(a) * r, x + Math.cos(a) * (r + 10), y + Math.sin(a) * (r + 10));
+        }
+        c.lineWidth = 6;
+      }
+    },
+    bumperGlow: '#ffcf7a',
+    paintBumper(c, r) {
+      c.fillStyle = '#241708';
+      cFill(c, 0, 0, r);
+      c.strokeStyle = '#ffcf7a'; c.lineWidth = 2.5;
+      cStroke(c, 0, 0, r * 0.92);
+      c.lineWidth = 1.5;
+      for (let i = 0; i < 12; i++) {
+        const a = i * TAU / 12;
+        ln(c, Math.cos(a) * r * 0.7, Math.sin(a) * r * 0.7, Math.cos(a) * r * 0.85, Math.sin(a) * r * 0.85);
+      }
+      c.strokeStyle = '#fff'; c.lineWidth = 2;
+      ln(c, 0, 0, Math.cos(-1.0) * r * 0.5, Math.sin(-1.0) * r * 0.5);
+      ln(c, 0, 0, Math.cos(0.6) * r * 0.32, Math.sin(0.6) * r * 0.32);
+    },
+  },
+
+  { // 15 — değirmen: dönen kanat engel
+    name: 'DEĞİRMEN',
+    hud: '#d4e896',
+    mechLabel: 'RÜZGAR DEĞİRMENİ',
+    mech: { pinwheel: { speed: 2.6 } },
+    wallStyle: { color: '#a8c46a', width: 5, blur: 4, dash: null },
+    accent: '#c9a24a', target: '#eaffb0', targetGlow: '#d4e896',
+    saucer: '#6a8a3a', saucerHi: '#d4e896',
+    flipA: '#eaffb0', flipB: '#c9a24a',
+    trail: '#d4e896', spark: '#eaffb0',
+    ambient: { type: 'fireflies', color: '#eaffc4', max: 10, rate: 4 },
+    bg(c) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#8fb8c4'); g.addColorStop(0.35, '#c4d896'); g.addColorStop(1, '#7a9a4a');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.fillStyle = 'rgba(90, 120, 50, 0.5)';
+      c.beginPath();
+      c.moveTo(0, 620); c.quadraticCurveTo(140, 560, 270, 610); c.quadraticCurveTo(400, 660, 540, 600);
+      c.lineTo(540, H); c.lineTo(0, H); c.closePath(); c.fill();
+      c.strokeStyle = 'rgba(255,255,255,0.12)'; c.lineWidth = 2;
+      for (let i = 0; i < 5; i++) { const y = 120 + i * 60; ln(c, 40, y, 200, y - 10); }
+    },
+    bumperGlow: '#c9a24a',
+    paintBumper(c, r) {
+      const g = c.createLinearGradient(-r, 0, r, 0);
+      g.addColorStop(0, '#a87f3f'); g.addColorStop(0.5, '#c9a24a'); g.addColorStop(1, '#8a6a2a');
+      c.fillStyle = g; cFill(c, 0, 0, r);
+      c.strokeStyle = 'rgba(60,40,10,0.6)'; c.lineWidth = 2.5;
+      cStroke(c, 0, -r * 0.45, r * 0.98);
+      cStroke(c, 0, r * 0.45, r * 0.98);
+      c.strokeStyle = '#3a2a10'; c.lineWidth = 1.2;
+      for (let i = -2; i <= 2; i++) ln(c, -r * 0.85, i * r * 0.3, r * 0.85, i * r * 0.3);
+    },
+  },
+
+  { // 16 — fırtına: bumperler arasında zincirleme şimşek
+    name: 'FIRTINA',
+    hud: '#bfe0ff',
+    mechLabel: 'ZİNCİR ŞİMŞEK',
+    mech: { chainLightning: { radius: 160 } },
+    wallStyle: { color: '#7a8fd8', width: 4, blur: 9, dash: null },
+    accent: '#e0d8ff', target: '#dff0ff', targetGlow: '#bfe0ff',
+    saucer: '#3a2a6a', saucerHi: '#bfe0ff',
+    flipA: '#e0d8ff', flipB: '#4a3a8a',
+    trail: '#bfe0ff', spark: '#e0d8ff',
+    glowPulse: true,
+    ambient: { type: 'stars', color: '#bfe0ff', max: 14, rate: 6 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#0c0f22'); g.addColorStop(0.6, '#131a30'); g.addColorStop(1, '#080a16');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.fillStyle = 'rgba(30, 40, 70, 0.4)';
+      for (let i = 0; i < 6; i++) {
+        const x = rng() * W, y = rng() * 300, w = 90 + rng() * 120;
+        c.beginPath(); c.ellipse(x, y, w, w * 0.4, 0, 0, TAU); c.fill();
+      }
+      c.strokeStyle = 'rgba(191, 224, 255, 0.10)'; c.lineWidth = 2;
+      let x = 220, y = 40;
+      c.beginPath(); c.moveTo(x, y);
+      for (let s = 0; s < 6; s++) { x += rng() * 50 - 25; y += 60; c.lineTo(x, y); }
+      c.stroke();
+    },
+    bumperGlow: '#bfe0ff',
+    paintBumper(c, r) {
+      const g = c.createRadialGradient(0, 0, 2, 0, 0, r);
+      g.addColorStop(0, '#e0d8ff'); g.addColorStop(0.6, '#7a6fc4'); g.addColorStop(1, '#2a2050');
+      c.fillStyle = g; cFill(c, 0, 0, r);
+      c.strokeStyle = '#bfe0ff'; c.lineWidth = 1.6;
+      for (let i = 0; i < 5; i++) {
+        const a = i * TAU / 5;
+        c.beginPath();
+        c.moveTo(Math.cos(a) * r * 0.3, Math.sin(a) * r * 0.3);
+        c.lineTo(Math.cos(a + 0.3) * r * 0.7, Math.sin(a + 0.3) * r * 0.7);
+        c.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        c.stroke();
+      }
+    },
+  },
+
+  { // 17 — bataklık: yavaşça batıp fırlatan çukurlar
+    name: 'BATAKLIK',
+    hud: '#c4e08a',
+    mechLabel: 'BATAKLIK',
+    mech: { quicksand: { sinkTime: 2.0 } },
+    wallStyle: { color: '#5a7a3a', width: 5, blur: 3, dash: null },
+    accent: '#8a6a3a', target: '#eaffc4', targetGlow: '#c4e08a',
+    saucer: '#3a4a2a', saucerHi: '#c4e08a',
+    flipA: '#eaffc4', flipB: '#5a7a3a',
+    trail: '#8a9a6a', spark: '#c4e08a',
+    ambient: { type: 'fireflies', color: '#c4ff8a', max: 10, rate: 4 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#1a2410'); g.addColorStop(0.6, '#141c0c'); g.addColorStop(1, '#0a0e06');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.fillStyle = 'rgba(160, 180, 140, 0.06)';
+      for (let i = 0; i < 4; i++) c.fillRect(0, 100 + i * 180, W, 40);
+      c.strokeStyle = 'rgba(60, 80, 30, 0.5)'; c.lineWidth = 3;
+      for (let i = 0; i < 7; i++) {
+        const x = rng() * W;
+        c.beginPath(); c.moveTo(x, 0);
+        c.quadraticCurveTo(x + 20, 140, x - 10, 300);
+        c.stroke();
+      }
+    },
+    bumperGlow: '#c4e08a',
+    paintBumper(c, r) {
+      c.fillStyle = '#3f6a2a';
+      c.beginPath();
+      c.arc(0, 0, r, 0.35, TAU - 0.35);
+      c.closePath(); c.fill();
+      c.strokeStyle = '#1f3a12'; c.lineWidth = 2; c.stroke();
+      c.strokeStyle = 'rgba(200, 255, 160, 0.5)'; c.lineWidth = 1.4;
+      ln(c, -r * 0.5, -r * 0.2, r * 0.5, r * 0.1);
+      ln(c, -r * 0.3, r * 0.3, r * 0.3, r * 0.4);
+      c.fillStyle = 'rgba(255,255,255,0.25)';
+      cFill(c, -r * 0.3, -r * 0.3, r * 0.16);
+    },
+  },
+
+  { // 18 — hortum: merkezden dışa iten rüzgar alanı
+    name: 'HORTUM',
+    hud: '#e8dcc4',
+    mechLabel: 'YELPAZE',
+    mech: { fan: { force: 1600000, range: 150 } },
+    wallStyle: { color: '#b0a284', width: 5, blur: 4, dash: null },
+    accent: '#8a7a5a', target: '#f4ecd8', targetGlow: '#e8dcc4',
+    saucer: '#5a4f3a', saucerHi: '#e8dcc4',
+    flipA: '#f4ecd8', flipB: '#8a7a5a',
+    trail: '#c4b89a', spark: '#e8dcc4',
+    ambient: { type: 'embers', color: '#c4b89a', max: 14, rate: 6 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#3a3428'); g.addColorStop(1, '#1c1810');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      c.strokeStyle = 'rgba(228, 214, 180, 0.08)';
+      for (let i = 0; i < 5; i++) {
+        c.lineWidth = 1 + i * 0.4;
+        c.beginPath();
+        for (let a = 0; a < TAU * 2.2; a += 0.15) {
+          const rr = a * 16;
+          const x = 270 + Math.cos(a + i) * rr * 0.5, y = 460 + Math.sin(a + i) * rr * 0.32;
+          a === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+        }
+        c.stroke();
+      }
+    },
+    bumperGlow: '#e8dcc4',
+    bumperSpin: -2.0,
+    paintBumper(c, r) {
+      c.fillStyle = '#2a2620';
+      cFill(c, 0, 0, r);
+      c.fillStyle = '#e8dcc4';
+      for (let k = 0; k < 3; k++) {
+        c.save(); c.rotate(k * TAU / 3);
+        c.beginPath(); c.ellipse(r * 0.42, 0, r * 0.42, r * 0.18, 0, 0, TAU); c.fill();
+        c.restore();
+      }
+      c.fillStyle = '#8a7a5a'; cFill(c, 0, 0, r * 0.22);
+    },
+  },
+
+  { // 19 — istasyon: periyodik sıfır yerçekimi nabzı
+    name: 'İSTASYON',
+    hud: '#dfe8ff',
+    mechLabel: 'SIFIR YERÇEKİMİ',
+    mech: { zeroG: { period: 5, duration: 1.3 } },
+    wallStyle: { color: '#8fa8d8', width: 4, blur: 6, dash: null },
+    accent: '#6a8fc4', target: '#eaf2ff', targetGlow: '#dfe8ff',
+    saucer: '#2a3a5a', saucerHi: '#dfe8ff',
+    flipA: '#eaf2ff', flipB: '#6a8fc4',
+    trail: '#dfe8ff', spark: '#eaf2ff',
+    ambient: { type: 'stars', color: '#ffffff', max: 18, rate: 8 },
+    bg(c, rng) {
+      c.fillStyle = '#050810'; c.fillRect(0, 0, W, H);
+      for (let i = 0; i < 60; i++) {
+        c.fillStyle = `rgba(255,255,255,${0.2 + rng() * 0.5})`;
+        cFill(c, rng() * W, rng() * H, rng() < 0.85 ? 0.8 : 1.6);
+      }
+      c.strokeStyle = 'rgba(143, 168, 216, 0.14)'; c.lineWidth = 1.4;
+      for (let y = 60; y < H; y += 130) ln(c, 0, y, W, y);
+      for (let x = 30; x < W; x += 130) ln(c, x, 0, x, H);
+      c.strokeStyle = 'rgba(143, 168, 216, 0.25)'; c.lineWidth = 2;
+      for (let i = 0; i < 4; i++) { const y = 60 + i * 130; c.strokeRect(20, y, 500, 4); }
+    },
+    bumperGlow: '#dfe8ff',
+    paintBumper(c, r) {
+      c.fillStyle = '#2a3a5a';
+      c.beginPath(); c.roundRect ? c.roundRect(-r * 0.7, -r, r * 1.4, r * 2, r * 0.5) : c.rect(-r * 0.7, -r, r * 1.4, r * 2);
+      c.fill();
+      c.strokeStyle = '#dfe8ff'; c.lineWidth = 2; c.stroke();
+      c.fillStyle = '#6a8fc4';
+      c.fillRect(-r * 1.15, -r * 0.25, r * 0.42, r * 0.5);
+      c.fillRect(r * 0.73, -r * 0.25, r * 0.42, r * 0.5);
+      c.strokeStyle = '#dfe8ff'; c.lineWidth = 1.5;
+      ln(c, 0, -r, 0, -r * 1.35);
+    },
+  },
+
+  { // 20 — roket rampası: sabit yönlü fırlatma yastıkları
+    name: 'ROKET',
+    hud: '#ffb37a',
+    mechLabel: 'FIRLATMA YASTIKLARI',
+    mech: { launchPads: { count: 3 } },
+    wallStyle: { color: '#ff8f4a', width: 5, blur: 8, dash: null },
+    accent: '#ff5f3f', target: '#ffe3c4', targetGlow: '#ffb37a',
+    saucer: '#3a1a0a', saucerHi: '#ffb37a',
+    flipA: '#ffe3c4', flipB: '#ff5f3f',
+    trail: '#ffb37a', spark: '#ffe3c4',
+    ambient: { type: 'embers', color: '#ff9f4a', max: 16, rate: 8 },
+    bg(c, rng) {
+      const g = c.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#0c0a14'); g.addColorStop(0.7, '#1a0f0c'); g.addColorStop(1, '#100806');
+      c.fillStyle = g; c.fillRect(0, 0, W, H);
+      for (const x of [110, 270, 430]) {
+        const beam = c.createLinearGradient(x, H, x, H - 500);
+        beam.addColorStop(0, 'rgba(255, 159, 74, 0.20)'); beam.addColorStop(1, 'transparent');
+        c.fillStyle = beam;
+        c.beginPath();
+        c.moveTo(x - 30, H); c.lineTo(x - 6, H - 500); c.lineTo(x + 6, H - 500); c.lineTo(x + 30, H);
+        c.closePath(); c.fill();
+      }
+      c.fillStyle = '#1a0f0c';
+      for (let i = 0; i < 3; i++) c.fillRect(60 + i * 180, H - 60, 6, -220 - i * 30);
+      c.save(); c.translate(0, 60); c.rotate(0.02);
+      for (let x = -40; x < W + 40; x += 40) { c.fillStyle = (x / 40) % 2 ? '#ff5f3f' : '#0c0a14'; c.fillRect(x, 0, 40, 14); }
+      c.restore();
+    },
+    bumperGlow: '#ff9f4a',
+    paintBumper(c, r) {
+      const g = c.createLinearGradient(0, -r, 0, r);
+      g.addColorStop(0, '#ffe3c4'); g.addColorStop(0.5, '#ff8f4a'); g.addColorStop(1, '#ff3f1f');
+      c.fillStyle = g;
+      c.beginPath();
+      c.moveTo(0, -r); c.lineTo(r * 0.85, r * 0.7); c.lineTo(-r * 0.85, r * 0.7);
+      c.closePath(); c.fill();
+      c.strokeStyle = '#dfe4ea'; c.lineWidth = 2.5;
+      ln(c, -r * 0.9, -r * 0.25, r * 0.9, -r * 0.25);
+      c.fillStyle = 'rgba(255,255,255,0.4)';
+      c.beginPath(); c.moveTo(-r * 0.15, -r * 0.7); c.lineTo(r * 0.1, -r * 0.1); c.lineTo(-r * 0.35, -r * 0.1); c.closePath(); c.fill();
+    },
+  },
 ];
 let theme = THEMES[0];
+const recentThemes = [];   // tekrar-önleyici tema geçmişi (buildLevel doldurur)
+let forcedThemeIdx = null; // test kancası: belirli bir temayı zorla seçtirir
 
 /* ---------------- Masa geometrisi (bölüm başına üretilir) ---------------- */
 // Segment: {x1,y1,x2,y2, e:restitüsyon, tag}
@@ -574,7 +1074,39 @@ let levelGravity = GRAVITY;
 let decoSeed = 1;
 
 /* ---------------- Temaya özgü mekanik durumu ---------------- */
-const mech = { bricks: [], brickRespawn: 0, pools: [], geyser: null, wind: null, streaks: [] };
+const mech = {
+  bricks: [], brickRespawn: 0, pools: [], geyser: null, wind: null, streaks: [],
+  portals: null, magnet: null, icePatches: [], laser: null, conveyorZone: null,
+  pinwheelObj: null, bolts: [], quicksandPits: [], fanObj: null, pads: [],
+};
+let slowMoTimer = 0;   // Zaman Yavaşlatma (bullet-time) mekaniği için
+
+// Bumperlerden ve saucer'dan uzak, masanın açık orta bölgesinde güvenli bir nokta üretir.
+function placePoint(rng, opts = {}) {
+  const r = opts.r || 70;
+  let x = 100 + rng() * 300, y = 380 + rng() * 220, tries = 0;
+  while (tries++ < 30 && (
+    bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + r * 0.55) ||
+    Math.hypot(saucer.x - x, saucer.y - y) < r * 0.55 + 50
+  )) { x = 100 + rng() * 300; y = 380 + rng() * 220; }
+  return { x, y };
+}
+
+// Birbiriyle ve masa öğeleriyle çakışmayan elips bölgeler üretir (buz/bataklık gibi).
+function placeZones(rng, count, rxRange, ryRange) {
+  const list = [];
+  let tries = 0;
+  while (list.length < count && tries++ < 60) {
+    const x = 100 + rng() * 300, y = 380 + rng() * 220;
+    const rx = rxRange[0] + rng() * (rxRange[1] - rxRange[0]);
+    const ry = ryRange[0] + rng() * (ryRange[1] - ryRange[0]);
+    if (bumpers.some(b => Math.hypot(b.x - x, b.y - y) < b.r + rx)) continue;
+    if (Math.hypot(saucer.x - x, saucer.y - y) < rx + 50) continue;
+    if (list.some(q => Math.hypot(q.x - x, q.y - y) < q.rx + rx + 16)) continue;
+    list.push({ x, y, rx, ry });
+  }
+  return list;
+}
 
 function resetMech(rng) {
   mech.bricks.length = 0;
@@ -583,6 +1115,17 @@ function resetMech(rng) {
   mech.geyser = null;
   mech.wind = null;
   mech.brickRespawn = 0;
+  mech.portals = null;
+  mech.magnet = null;
+  mech.icePatches.length = 0;
+  mech.laser = null;
+  mech.conveyorZone = null;
+  mech.pinwheelObj = null;
+  mech.bolts.length = 0;
+  mech.quicksandPits.length = 0;
+  mech.fanObj = null;
+  mech.pads.length = 0;
+  slowMoTimer = 0;
   const m = theme.mech || {};
 
   if (m.bricks) spawnBricks();
@@ -601,6 +1144,56 @@ function resetMech(rng) {
 
   if (m.geyser) mech.geyser = { x: 251, y: 585, r: 66, phase: 'idle', timer: 4 + rng() * 3 };
   if (m.wind) mech.wind = { v: 0, target: (rng() * 2 - 1) * 240, timer: 2 + rng() * 2 };
+
+  if (m.portals) {
+    const p1 = placePoint(rng, { r: 80 });
+    let p2 = placePoint(rng, { r: 80 }), tries = 0;
+    while (Math.hypot(p1.x - p2.x, p1.y - p2.y) < 220 && tries++ < 20) p2 = placePoint(rng, { r: 80 });
+    mech.portals = {
+      a: { x: p1.x, y: p1.y, r: 24, cooldown: 0, exitAngle: -Math.PI / 2, color: '#b26bff' },
+      b: { x: p2.x, y: p2.y, r: 24, cooldown: 0, exitAngle: -Math.PI / 2, color: '#5fd8ff' },
+    };
+  }
+
+  if (m.magnet) {
+    const pt = placePoint(rng, { r: 100 });
+    mech.magnet = { x: pt.x, y: pt.y, r: 28, holdTime: m.magnet.holdTime || 1.0, catching: false, holdTimer: 0 };
+  }
+
+  if (m.ice) mech.icePatches = placeZones(rng, 2, [40, 58], [24, 34]);
+
+  if (m.laserGate) {
+    mech.laser = { x1: 108, y1: 0, x2: 392, y2: 0, y: 420 + rng() * 140, t: rng() * 3, period: m.laserGate.period || 2.2, onRatio: m.laserGate.onRatio || 0.45, on: false };
+    mech.laser.y1 = mech.laser.y; mech.laser.y2 = mech.laser.y;
+  }
+
+  if (m.conveyor) {
+    const pt = placePoint(rng, { r: 110 });
+    mech.conveyorZone = { x: pt.x - 82, y: pt.y - 34, w: 164, h: 68, dir: rng() < 0.5 ? -1 : 1 };
+  }
+
+  if (m.pinwheel) {
+    const pt = placePoint(rng, { r: 100 });
+    mech.pinwheelObj = { x: pt.x, y: pt.y, angle: rng() * TAU, speed: (m.pinwheel.speed || 2.2) * (rng() < 0.5 ? -1 : 1), len: 68, thickness: 11 };
+  }
+
+  if (m.quicksand) mech.quicksandPits = placeZones(rng, 2, [44, 60], [26, 36]);
+
+  if (m.fan) {
+    const pt = placePoint(rng, { r: 130 });
+    mech.fanObj = { x: pt.x, y: pt.y, r: m.fan.range || 150, angle: 0 };
+  }
+
+  if (m.launchPads) {
+    const n = m.launchPads.count || 3;
+    let tries = 0;
+    while (mech.pads.length < n && tries++ < 60) {
+      const pt = placePoint(rng, { r: 60 });
+      if (mech.pads.some(p => Math.hypot(p.x - pt.x, p.y - pt.y) < 90)) continue;
+      const angle = -Math.PI * (0.25 + rng() * 0.5);   // yukarı yönlü geniş yelpaze
+      mech.pads.push({ x: pt.x, y: pt.y, r: 22, angle, cooldown: 0, flash: 0 });
+    }
+  }
 }
 
 function spawnBricks() {
@@ -650,6 +1243,49 @@ function updateMech(dt) {
     mech.brickRespawn -= dt;
     if (mech.brickRespawn <= 0) mech.bricks.forEach(b => b.alive = true);
   }
+
+  if (mech.portals) {
+    mech.portals.a.cooldown = Math.max(0, mech.portals.a.cooldown - dt);
+    mech.portals.b.cooldown = Math.max(0, mech.portals.b.cooldown - dt);
+  }
+
+  if (mech.magnet && mech.magnet.catching) {
+    mech.magnet.holdTimer -= dt;
+    const earlyRelease = flipL.pressed || flipR.pressed;
+    if (mech.magnet.holdTimer <= 0 || earlyRelease) {
+      const held = activeBalls.find(x => x.caught);
+      if (held) {
+        held.caught = false;
+        let ang = -Math.PI / 2;
+        if (flipL.pressed && !flipR.pressed) ang = -Math.PI * 0.72;
+        else if (flipR.pressed && !flipL.pressed) ang = -Math.PI * 0.28;
+        held.vx = Math.cos(ang) * 950;
+        held.vy = Math.sin(ang) * 950;
+        registerHit(600, mech.magnet.x, mech.magnet.y - 20);
+        spawnParticles(mech.magnet.x, mech.magnet.y, theme.hud, 18, 380);
+        SFX.eject(); buzz([20, 30, 20]);
+      }
+      mech.magnet.catching = false;
+    }
+  }
+
+  if (mech.laser) {
+    mech.laser.t += dt;
+    mech.laser.on = (mech.laser.t % mech.laser.period) < (mech.laser.period * mech.laser.onRatio);
+  }
+
+  if (mech.pinwheelObj) mech.pinwheelObj.angle += mech.pinwheelObj.speed * dt;
+  if (mech.fanObj) mech.fanObj.angle += dt * 5;
+
+  for (let i = mech.bolts.length - 1; i >= 0; i--) {
+    mech.bolts[i].t += dt;
+    if (mech.bolts[i].t > 0.4) mech.bolts.splice(i, 1);
+  }
+
+  for (const p of mech.pads) {
+    if (p.cooldown > 0) p.cooldown -= dt;
+    if (p.flash > 0) p.flash -= dt;
+  }
 }
 
 function collideBrick(b, br) {
@@ -674,12 +1310,100 @@ function collideBrick(b, br) {
   }
 }
 
+// Rüzgar değirmeni: merkezden geçen iki dik kanat (4 uç), dönme hızıyla topu teğetsel fırlatır.
+function collidePinwheel(b) {
+  const p = mech.pinwheelObj;
+  if (!p) return;
+  for (let k = 0; k < 2; k++) {
+    const a = p.angle + k * Math.PI / 2;
+    const dx = Math.cos(a) * p.len, dy = Math.sin(a) * p.len;
+    const x1 = p.x - dx, y1 = p.y - dy, x2 = p.x + dx, y2 = p.y + dy;
+    const ddx = x2 - x1, ddy = y2 - y1;
+    const len2 = ddx * ddx + ddy * ddy;
+    let t = ((b.x - x1) * ddx + (b.y - y1) * ddy) / len2;
+    t = clamp(t, 0, 1);
+    const qx = x1 + ddx * t, qy = y1 + ddy * t;
+    let nx = b.x - qx, ny = b.y - qy;
+    const d2 = nx * nx + ny * ny;
+    const rr = BALL_R + p.thickness / 2;
+    if (d2 >= rr * rr) continue;
+    const d = Math.sqrt(d2) || 0.0001;
+    nx /= d; ny /= d;
+    b.x = qx + nx * rr; b.y = qy + ny * rr;
+    const radius = Math.hypot(qx - p.x, qy - p.y);
+    const tangSpeed = Math.abs(p.speed) * radius * Math.sign(p.speed);
+    const tx = -Math.sin(a), ty = Math.cos(a);
+    b.vx += tx * tangSpeed * 1.4;
+    b.vy += ty * tangSpeed * 1.4;
+    const vn = b.vx * nx + b.vy * ny;
+    if (vn < 0) { b.vx -= 1.3 * vn * nx; b.vy -= 1.3 * vn * ny; }
+    registerHit(120, qx, qy);
+    spawnParticles(qx, qy, theme.spark, 6, 260);
+    SFX.sling(); buzz(10);
+    state.shake = Math.max(state.shake, 3);
+    return;
+  }
+}
+
+// Fırlatma yastıkları: sabit yönde güçlü, deterministik fırlatma (bumperin aksine yön sabit).
+function collideLaunchPads(b) {
+  for (const p of mech.pads) {
+    if (p.cooldown > 0) continue;
+    const dx = b.x - p.x, dy = b.y - p.y;
+    const rr = p.r + BALL_R;
+    if (dx * dx + dy * dy >= rr * rr) continue;
+    b.vx = Math.cos(p.angle) * 1400;
+    b.vy = Math.sin(p.angle) * 1400;
+    p.cooldown = 0.35;
+    p.flash = 0.3;
+    registerHit(200, p.x, p.y);
+    spawnParticles(p.x, p.y, theme.spark, 12, 340);
+    SFX.launch(); buzz(20);
+    state.shake = Math.max(state.shake, 4);
+    return;
+  }
+}
+
+// Zincir şimşek: vurulan bumperden en yakın vurulmamış bumperlara sıçrayarak bonus zinciri kurar.
+function triggerChain(origin) {
+  const cfg = theme.mech.chainLightning;
+  let current = origin;
+  const hit = new Set([origin]);
+  let hops = 0;
+  while (hops < 4) {
+    let next = null, bestD = cfg.radius || 150;
+    for (const bp of bumpers) {
+      if (hit.has(bp)) continue;
+      const d = Math.hypot(bp.x - current.x, bp.y - current.y);
+      if (d < bestD) { bestD = d; next = bp; }
+    }
+    if (!next) break;
+    mech.bolts.push({ x1: current.x, y1: current.y, x2: next.x, y2: next.y, t: 0 });
+    addScore(100 * (hops + 2), next.x, next.y - 20);
+    next.flash = Math.max(next.flash, 0.3);
+    spawnParticles(next.x, next.y, '#bfe0ff', 10, 260);
+    hit.add(next);
+    current = next;
+    hops++;
+  }
+  if (hops > 0) {
+    SFX.multiball(); buzz([20, 20, 20]);
+    banner('ZİNCİR x' + (hops + 1) + '!');
+  }
+}
+
 // Rastgele bölüm inşası: tema, bumper dizilimi, hedef bankı yönü,
 // şerit sayısı, saucer konumu ve yerçekimi tohuma göre değişir.
 function buildLevel(seed) {
   const rng = mulberry32(seed);
   decoSeed = (seed ^ 0x5bd1e995) >>> 0;
-  theme = THEMES[Math.floor(rng() * THEMES.length)];
+  // Son 4 temayı tekrarlamayan seçim — arka arkaya aynı mekaniğin gelmesini engeller
+  let themeIdx, pickTries = 0;
+  do { themeIdx = forcedThemeIdx !== null ? forcedThemeIdx : Math.floor(rng() * THEMES.length); }
+  while (forcedThemeIdx === null && recentThemes.includes(themeIdx) && pickTries++ < 15);
+  theme = THEMES[themeIdx];
+  recentThemes.push(themeIdx);
+  if (recentThemes.length > 4) recentThemes.shift();
   // HUD renklerini temaya uydur
   const root = document.documentElement.style;
   root.setProperty('--hud', theme.hud);
@@ -778,6 +1502,7 @@ function buildLevel(seed) {
   spinner.vel = 0;
   spinner.score = 0;
 
+  pickMission(rng, state.level || 1);
   resetMech(rng);
   buildTableCache();
 }
@@ -785,6 +1510,58 @@ function buildLevel(seed) {
 /* ---------------- Bölüm hedefleri ---------------- */
 function targetFor(level) {
   return Math.round(10000 * Math.pow(1.5, level - 1) / 500) * 500;
+}
+
+/* ---------------- Bölüm içi yan görev (oynanışı çeşitlendirir) ----------------
+   Her bölümde skor hedefinin yanında, oyuncuyu farklı bir davranışa yönlendiren
+   rastgele bir mini görev belirlenir; bölüm teması aynı kalsa bile "bu bölümde
+   ne yapmalıyım" sorusunun cevabı sürekli değişir. */
+const MISSION_POOL = [
+  { key: 'bumper', label: n => n + ' BUMPER VUR', base: 6, perLevel: 1.1 },
+  { key: 'target', label: n => n + ' HEDEF DEVİR', base: 3, perLevel: 0.9 },
+  { key: 'lane', label: n => n + ' ŞERİT YAK', base: 2, perLevel: 0.5 },
+  { key: 'combo', label: n => 'KOMBO x' + n + ' YAP', base: 4, perLevel: 0.7 },
+  { key: 'saucer', label: n => "SAUCER'A " + n + ' KEZ SOK', base: 1, perLevel: 0.35 },
+  { key: 'spin', label: n => "SPINNER'I " + n + ' KEZ ÇEVİR', base: 4, perLevel: 0.9 },
+];
+let lastMissionKey = null;
+
+function pickMission(rng, level) {
+  let def = MISSION_POOL[Math.floor(rng() * MISSION_POOL.length)];
+  if (def.key === lastMissionKey && MISSION_POOL.length > 1) {
+    def = MISSION_POOL[(MISSION_POOL.indexOf(def) + 1 + Math.floor(rng() * (MISSION_POOL.length - 1))) % MISSION_POOL.length];
+  }
+  lastMissionKey = def.key;
+  const target = Math.max(1, Math.round(def.base + def.perLevel * (level - 1)));
+  state.missionKey = def.key;
+  state.missionTarget = target;
+  state.missionProgress = 0;
+  state.missionDone = false;
+  state.missionLabel = def.label(target);
+  updateMissionHud();
+}
+
+function missionTick(key, amount = 1) {
+  if (state.missionDone || state.missionKey !== key) return;
+  state.missionProgress = Math.min(state.missionTarget, state.missionProgress + amount);
+  updateMissionHud();
+  if (state.missionProgress >= state.missionTarget) completeMission();
+}
+
+function completeMission() {
+  state.missionDone = true;
+  const bonus = 1200 * state.level;
+  addScore(bonus, 251, 300);
+  banner('GÖREV TAMAM! +' + fmt(bonus));
+  SFX.extraBall(); buzz([30, 40, 30]);
+  updateMissionHud();
+}
+
+const missionEl = document.getElementById('mission');
+function updateMissionHud() {
+  if (!state.missionKey) { missionEl.textContent = ''; return; }
+  missionEl.textContent = (state.missionDone ? '✓ ' : '◆ ') + state.missionLabel + ' (' + state.missionProgress + '/' + state.missionTarget + ')';
+  missionEl.classList.toggle('done', state.missionDone);
 }
 
 /* ---------------- Flipperlar ---------------- */
@@ -838,6 +1615,11 @@ const state = {
   levelTimer: 0,
   combo: 0,                 // art arda vuruş kombosu
   comboTimer: 0,
+  missionKey: null,          // bölüm içi yan görev
+  missionTarget: 0,
+  missionProgress: 0,
+  missionDone: false,
+  missionLabel: '',
   tilt: 0,                  // >0 iken flipperlar kilitli (TILT cezası)
   nudgeCooldown: 0,
 };
@@ -907,6 +1689,11 @@ function registerHit(base, x, y) {
   state.comboTimer = COMBO_WINDOW;
   addScore(base, x, y);
   updateComboHud();
+  if (!state.missionDone && state.missionKey === 'combo' && state.combo > state.missionProgress) {
+    state.missionProgress = Math.min(state.missionTarget, state.combo);
+    updateMissionHud();
+    if (state.missionProgress >= state.missionTarget) completeMission();
+  }
   if (state.combo >= 3 && state.combo % 3 === 0) {
     const bonus = 150 * state.combo;
     addScore(bonus, x, y - 24);
@@ -1191,6 +1978,7 @@ function handleSegmentHit(b, s, vn, qx, qy) {
     t.seg.enabled = false;
     t.flash = 0.4;
     registerHit(1000, qx, qy);
+    missionTick('target');
     spawnParticles(qx, qy, theme.target, 12, 280);
     SFX.target(); buzz(20);
     if (targets.every(x => !x.up)) {
@@ -1224,6 +2012,15 @@ function collideBumper(b, bp) {
   SFX.bumper(); buzz(12);
   state.glow = Math.max(state.glow, 0.6);
   state.shake = Math.max(state.shake, 3);
+
+  missionTick('bumper');
+
+  const m = theme.mech;
+  if (m && m.chainLightning) triggerChain(bp);
+  if (m && m.bulletTime) {
+    slowMoTimer = m.bulletTime.duration || 1.6;
+    banner('ZAMAN YAVAŞLADI!');
+  }
 }
 
 function collideFlipper(b, f, dt) {
@@ -1277,14 +2074,43 @@ function ballVsBall(a, b) {
 
 function stepBall(b, dt) {
   const m = theme.mech || {};
-  b.vy += levelGravity * (m.gravityScale || 1) * dt;
+
+  // Mıknatısa yakalanmış top: tamamen sabit, fizik dışı.
+  if (b.caught && mech.magnet) {
+    b.x = mech.magnet.x; b.y = mech.magnet.y; b.vx = 0; b.vy = 0;
+    return;
+  }
+
+  let gScale = m.gravityScale || 1;
+  if (m.zeroG) {
+    const P = m.zeroG.period, D = m.zeroG.duration;
+    const cyc = state.time % P;
+    if (cyc > P - D) gScale *= -0.22;   // periyodik ters/sıfır yerçekimi nabzı
+  }
+  b.vy += levelGravity * gScale * dt;
 
   // --- temaya özgü kuvvetler ---
   if (m.water) {
     const k = Math.exp(-m.water.drag * dt);
     b.vx *= k; b.vy *= k;
   }
+  if (m.ice) {
+    let inPatch = false;
+    for (const p of mech.icePatches) {
+      const ex = (b.x - p.x) / p.rx, ey = (b.y - p.y) / p.ry;
+      if (ex * ex + ey * ey < 1) { inPatch = true; break; }
+    }
+    if (!inPatch) { const k = Math.exp(-m.ice.baseDrag * dt); b.vx *= k; b.vy *= k; }
+  }
   if (mech.wind && b.x < LANE_X - BALL_R) b.vx += mech.wind.v * dt;
+  if (mech.fanObj) {
+    const f = mech.fanObj;
+    const dx = b.x - f.x, dy = b.y - f.y, d = Math.hypot(dx, dy);
+    if (d < f.r && d > 4) {
+      const a = Math.min(900, (m.fan.force || 26000000) / (d * d));
+      b.vx += dx / d * a * dt; b.vy += dy / d * a * dt;
+    }
+  }
   if (m.wells) {
     for (const bp of bumpers) {
       const dx = bp.x - b.x, dy = bp.y - b.y, d2 = dx * dx + dy * dy;
@@ -1303,10 +2129,49 @@ function stepBall(b, dt) {
       b.vx *= k; b.vy *= k;
     }
   }
+  for (const p of mech.quicksandPits) {
+    const ex = (b.x - p.x) / p.rx, ey = (b.y - p.y) / p.ry;
+    if (ex * ex + ey * ey < 1) {
+      b.sinkT = (b.sinkT || 0) + dt;
+      const k = Math.exp(-3.2 * dt);
+      b.vx *= k; b.vy *= k;
+      b.vx += (p.x - b.x) * 0.8 * dt;
+      b.vy += (p.y - b.y) * 0.8 * dt;
+      if (b.sinkT > (m.quicksand.sinkTime || 2.2)) {
+        b.vy = -1300; b.vx = rand(-150, 150);
+        b.sinkT = 0;
+        registerHit(350, p.x, p.y - 20);
+        banner('BATAKLIKTAN KURTULDU!');
+        spawnParticles(p.x, p.y, theme.accent, 20, 340);
+        SFX.eject(); buzz(30);
+      }
+    } else if (b.sinkT) {
+      b.sinkT = Math.max(0, b.sinkT - dt * 2);
+    }
+  }
   if (mech.geyser && mech.geyser.phase === 'blast') {
     const g = mech.geyser;
     const dx = b.x - g.x, dy = b.y - g.y;
     if (dx * dx + dy * dy < g.r * g.r) b.vy -= 5200 * dt;
+  }
+  if (mech.magnet && !mech.magnet.catching) {
+    const mg = mech.magnet;
+    const dx = mg.x - b.x, dy = mg.y - b.y, d2 = dx * dx + dy * dy;
+    if (d2 < mg.r * mg.r) {
+      b.caught = true; mg.catching = true; mg.holdTimer = mg.holdTime;
+      b.vx = 0; b.vy = 0; b.x = mg.x; b.y = mg.y;
+      spawnParticles(mg.x, mg.y, theme.accent, 14, 200);
+      SFX.saucer(); buzz(20);
+      return;
+    } else if (d2 < (mg.r * 2.4) * (mg.r * 2.4)) {
+      const d = Math.sqrt(d2) || 1;
+      const a = Math.min(700, 1400000 / d2);
+      b.vx += dx / d * a * dt; b.vy += dy / d * a * dt;
+    }
+  }
+  if (mech.conveyorZone) {
+    const z = mech.conveyorZone;
+    if (b.x > z.x && b.x < z.x + z.w && b.y > z.y && b.y < z.y + z.h) b.vx += z.dir * (m.conveyor.force || 190) * dt;
   }
 
   const sp = Math.hypot(b.vx, b.vy);
@@ -1318,8 +2183,31 @@ function stepBall(b, dt) {
   for (const s of segs) collideSegment(b, s, dt);
   for (const bp of bumpers) collideBumper(b, bp);
   for (const br of mech.bricks) if (br.alive) collideBrick(b, br);
+  if (m.pinwheel) collidePinwheel(b);
+  if (m.launchPads) collideLaunchPads(b);
   collideFlipper(b, flipL, dt);
   collideFlipper(b, flipR, dt);
+
+  // --- portallar ---
+  if (mech.portals) {
+    const A = mech.portals.a, Bp = mech.portals.b;
+    for (const [src, dst] of [[A, Bp], [Bp, A]]) {
+      if (src.cooldown > 0) continue;
+      const dx = b.x - src.x, dy = b.y - src.y;
+      if (dx * dx + dy * dy < src.r * src.r) {
+        const speed = Math.hypot(b.vx, b.vy);
+        b.x = dst.x + Math.cos(dst.exitAngle) * (dst.r + BALL_R + 4);
+        b.y = dst.y + Math.sin(dst.exitAngle) * (dst.r + BALL_R + 4);
+        b.vx = Math.cos(dst.exitAngle) * speed * 1.08;
+        b.vy = Math.sin(dst.exitAngle) * speed * 1.08;
+        dst.cooldown = 0.45;
+        registerHit(300, dst.x, dst.y);
+        spawnParticles(dst.x, dst.y, dst.color, 16, 300);
+        SFX.saucer(); buzz(15);
+        break;
+      }
+    }
+  }
 
   // --- kanal kapısı mantığı ---
   const inLane = b.x > LANE_X - BALL_R;
@@ -1328,11 +2216,33 @@ function stepBall(b, dt) {
     gateSeg.enabled = true;
   }
 
+  // --- lazer kapı: yatay hat geçişi ---
+  if (mech.laser) {
+    const L = mech.laser;
+    if ((prevY < L.y) !== (b.y < L.y)) {
+      const cx = (prevX + b.x) / 2;
+      if (cx > L.x1 && cx < L.x2) {
+        if (L.on) {
+          b.vy = -b.vy * 0.6;
+          b.vx += rand(-80, 80);
+          spawnParticles(cx, L.y, '#ff3355', 14, 300);
+          SFX.wall(); buzz(15);
+          state.shake = Math.max(state.shake, 3);
+        } else {
+          registerHit(400, cx, L.y);
+          spawnParticles(cx, L.y, theme.hud, 10, 250);
+          SFX.spinner();
+        }
+      }
+    }
+  }
+
   // --- spinner: kanal içinde y=500 çizgisini geçiş ---
   if (inLane && ((prevY < spinner.y) !== (b.y < spinner.y))) {
     const sp2 = Math.abs(b.vy);
     spinner.vel = Math.max(spinner.vel, sp2 * 0.05);
     spinner.score += 4 + ((sp2 / 260) | 0);
+    missionTick('spin');
   }
 
   // --- rollover şeritleri ---
@@ -1344,6 +2254,7 @@ function stepBall(b, dt) {
         l.lit = true;
         l.flash = 0.5;
         registerHit(500, l.x, l.y);
+        missionTick('lane');
         SFX.lane();
         if (lanes.every(x => x.lit)) {
           addScore(5000);
@@ -1382,6 +2293,7 @@ function captureSaucer(b) {
   saucer.cooldown = 5;
   saucer.glow = 1;
   saucer.locks++;
+  missionTick('saucer');
   SFX.saucer(); buzz(30);
   spawnParticles(saucer.x, saucer.y, theme.saucerHi, 16, 240);
 
@@ -1776,6 +2688,218 @@ function drawMech() {
       ln(ctx, ax + len, ay, ax + len - dir * 8, ay - 5);
       ln(ctx, ax + len, ay, ax + len - dir * 8, ay + 5);
     }
+    ctx.restore();
+  }
+
+  // buz yamaları
+  for (const p of mech.icePatches) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(190, 236, 255, 0.16)';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, p.rx, p.ry, 0, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(230, 250, 255, 0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    for (let i = 0; i < 3; i++) {
+      const a = i * 2.1 + p.x * 0.05;
+      ln(ctx, p.x + Math.cos(a) * p.rx * 0.2, p.y + Math.sin(a) * p.ry * 0.2,
+             p.x + Math.cos(a) * p.rx * 0.85, p.y + Math.sin(a) * p.ry * 0.85);
+    }
+    ctx.restore();
+  }
+
+  // bataklık çukurları
+  for (const p of mech.quicksandPits) {
+    ctx.save();
+    const g = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, p.rx);
+    g.addColorStop(0, 'rgba(60, 50, 20, 0.55)');
+    g.addColorStop(1, 'rgba(40, 60, 30, 0.15)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.ellipse(p.x, p.y, p.rx, p.ry, 0, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(150, 170, 90, 0.4)';
+    ctx.lineWidth = 2; ctx.stroke();
+    if (Math.random() < 0.3) spawnParticles(p.x + rand(-p.rx * 0.5, p.rx * 0.5), p.y, '#7a8f4a', 1, 40);
+    ctx.restore();
+  }
+
+  // portallar
+  if (mech.portals) {
+    for (const p of [mech.portals.a, mech.portals.b]) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      for (let i = 0; i < 3; i++) {
+        ctx.rotate(t * (1.4 - i * 0.3) * (i % 2 ? -1 : 1));
+        ctx.strokeStyle = withAlpha(p.color, 0.75 - i * 0.18);
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.ellipse(0, 0, p.r * (1 - i * 0.22), p.r * 0.4 * (1 - i * 0.22), 0, 0, TAU); ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // mıknatıs
+  if (mech.magnet) {
+    const mg = mech.magnet;
+    ctx.save();
+    ctx.translate(mg.x, mg.y);
+    const pulse = mg.catching ? 1.3 : 0.9 + 0.1 * Math.sin(t * 3);
+    ctx.strokeStyle = withAlpha(theme.accent, 0.5);
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 3; i++) cStroke(ctx, 0, 0, (mg.r * 0.6 + i * 10) * pulse);
+    ctx.fillStyle = '#c43b3b';
+    ctx.beginPath(); ctx.arc(0, 0, mg.r, Math.PI * 0.15, Math.PI * 0.85); ctx.fill();
+    ctx.fillStyle = '#3b5fc4';
+    ctx.beginPath(); ctx.arc(0, 0, mg.r, Math.PI * 1.15, Math.PI * 1.85); ctx.fill();
+    ctx.fillStyle = '#1a2350';
+    cFill(ctx, 0, 0, mg.r * 0.35);
+    ctx.restore();
+  }
+
+  // lazer kapı
+  if (mech.laser) {
+    const L = mech.laser;
+    ctx.save();
+    if (L.on) {
+      ctx.strokeStyle = 'rgba(255, 50, 70, 0.9)';
+      ctx.lineWidth = 4;
+      ctx.shadowColor = '#ff3246'; ctx.shadowBlur = 16;
+    } else {
+      ctx.setLineDash([8, 6]);
+      ctx.strokeStyle = withAlpha(theme.hud, 0.35);
+      ctx.lineWidth = 2;
+    }
+    ln(ctx, L.x1, L.y, L.x2, L.y);
+    ctx.restore();
+    ctx.fillStyle = theme.accent;
+    cFill(ctx, L.x1, L.y, 6);
+    cFill(ctx, L.x2, L.y, 6);
+  }
+
+  // konveyör bant
+  if (mech.conveyorZone) {
+    const z = mech.conveyorZone;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    ctx.fillRect(z.x, z.y, z.w, z.h);
+    ctx.strokeStyle = theme.accent; ctx.lineWidth = 2;
+    ctx.strokeRect(z.x, z.y, z.w, z.h);
+    ctx.beginPath(); ctx.rect(z.x, z.y, z.w, z.h); ctx.clip();
+    const off = ((t * 60 * z.dir) % 26 + 26) % 26;
+    ctx.fillStyle = withAlpha(theme.accent, 0.4);
+    for (let x = z.x - 26 + off; x < z.x + z.w; x += 26) {
+      ctx.beginPath();
+      ctx.moveTo(x, z.y + z.h / 2 - 10);
+      ctx.lineTo(x + 10 * z.dir, z.y + z.h / 2);
+      ctx.lineTo(x, z.y + z.h / 2 + 10);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // rüzgar değirmeni
+  if (mech.pinwheelObj) {
+    const p = mech.pinwheelObj;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    for (let k = 0; k < 4; k++) {
+      const a = p.angle + k * Math.PI / 2;
+      ctx.save();
+      ctx.rotate(a);
+      const g = ctx.createLinearGradient(0, 0, p.len, 0);
+      g.addColorStop(0, withAlpha(theme.accent, 0.9));
+      g.addColorStop(1, withAlpha(theme.accent, 0.25));
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(4, -p.thickness / 2);
+      ctx.lineTo(p.len, -3);
+      ctx.lineTo(p.len, 3);
+      ctx.lineTo(4, p.thickness / 2);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle = theme.hud;
+    cFill(ctx, 0, 0, 10);
+    ctx.restore();
+  }
+
+  // yelpaze (fan)
+  if (mech.fanObj) {
+    const f = mech.fanObj;
+    ctx.save();
+    for (let i = 0; i < 3; i++) {
+      const rr = ((t * 60 + i * 46) % 138);
+      ctx.strokeStyle = withAlpha(theme.hud, Math.max(0, 0.28 - rr / 500));
+      ctx.lineWidth = 2;
+      cStroke(ctx, f.x, f.y, 20 + rr);
+    }
+    ctx.translate(f.x, f.y);
+    ctx.rotate(f.angle);
+    ctx.fillStyle = theme.accent;
+    for (let k = 0; k < 3; k++) {
+      ctx.save();
+      ctx.rotate(k * TAU / 3);
+      ctx.beginPath();
+      ctx.ellipse(16, 0, 16, 6, 0, 0, TAU);
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.fillStyle = theme.hud;
+    cFill(ctx, 0, 0, 8);
+    ctx.restore();
+  }
+
+  // fırlatma yastıkları
+  for (const p of mech.pads) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    const f = p.flash > 0 ? p.flash / 0.3 : 0;
+    ctx.fillStyle = withAlpha(theme.accent, 0.35 + f * 0.4);
+    cFill(ctx, 0, 0, p.r);
+    ctx.strokeStyle = f > 0 ? '#fff' : theme.hud;
+    ctx.lineWidth = 2.5;
+    cStroke(ctx, 0, 0, p.r);
+    ctx.rotate(p.angle + Math.PI / 2);
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(0, -p.r * 0.55);
+    ctx.lineTo(-7, -p.r * 0.1);
+    ctx.lineTo(7, -p.r * 0.1);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  // sıfır yerçekimi nabzı: periyodik ekran tonu + uyarı
+  if (m.zeroG) {
+    const P = m.zeroG.period, D = m.zeroG.duration;
+    const cyc = t % P;
+    if (cyc > P - D) {
+      ctx.fillStyle = withAlpha(theme.hud, 0.09);
+      ctx.fillRect(0, 0, W, H);
+    } else if (cyc > P - D - 0.6) {
+      const pulse = 0.5 + 0.5 * Math.sin(t * 18);
+      ctx.fillStyle = withAlpha(theme.hud, 0.05 * pulse);
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  // zincir şimşek bağlantıları
+  for (const bolt of mech.bolts) {
+    const a = 1 - bolt.t / 0.4;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.strokeStyle = '#bfe0ff';
+    ctx.shadowColor = '#7ecbff'; ctx.shadowBlur = 10;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(bolt.x1, bolt.y1);
+    const segN = 5;
+    for (let i = 1; i < segN; i++) {
+      const f = i / segN;
+      const jx = (bolt.x1 + (bolt.x2 - bolt.x1) * f) + rand(-10, 10);
+      const jy = (bolt.y1 + (bolt.y2 - bolt.y1) * f) + rand(-10, 10);
+      ctx.lineTo(jx, jy);
+    }
+    ctx.lineTo(bolt.x2, bolt.y2);
+    ctx.stroke();
     ctx.restore();
   }
 }
@@ -2315,8 +3439,14 @@ function frame(now) {
   }
 
   if (dt > 0.05) dt = 0.05;
-  if (state.mode === 'playing') update(dt);
-  else state.time += dt;
+  if (state.mode === 'playing') {
+    let simDt = dt;
+    if (slowMoTimer > 0) {
+      slowMoTimer = Math.max(0, slowMoTimer - dt);
+      simDt = dt * 0.3;
+    }
+    update(simDt);
+  } else state.time += dt;
   draw();
 }
 
@@ -2332,6 +3462,14 @@ if (SFX.muted) {
 requestAnimationFrame(frame);
 
 // test kancası (otomatik testler için)
-window.__neonpinball = { state, addScore, registerHit, nudgeTable, triggerTilt };
+window.__neonpinball = {
+  state, addScore, registerHit, nudgeTable, triggerTilt,
+  THEMES, mech,
+  forceTheme(idx) {
+    forcedThemeIdx = idx;
+    buildLevel((Math.random() * 2 ** 31) | 0);
+    forcedThemeIdx = null;
+  },
+};
 
 })();
